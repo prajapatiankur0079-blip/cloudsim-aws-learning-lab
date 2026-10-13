@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CloudLab | EC2 Console</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<aside class="sidebar">
+    <h2>☁ CloudLab</h2>
+    <p class="nav-title">LEARN & PRACTICE</p>
+    <a class="nav active" href="/">EC2 Instances</a>
+    <a class="nav" href="#learn">Learn EC2</a>
+    <a class="nav" href="#activity">Activity History</a>
+    <div class="local-note">● Local simulator<br><small>No AWS account required</small></div>
+</aside>
+
+<main>
+    <header class="topbar">
+        <span>Cloud services / <b>EC2</b></span>
+        <span>Region: <b>Mumbai</b> · ap-south-1</span>
+    </header>
+
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">COMPUTE</p>
+            <h1>EC2 Instances</h1>
+            <p class="muted">Launch and manage virtual servers in your practice environment.</p>
+        </div>
+        <button class="primary" onclick="document.getElementById('create').scrollIntoView({behavior:'smooth'})">+ Launch instance</button>
+    </section>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+    <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endwith %}
+
+    <section class="stats">
+        <article class="stat">
+            <span>Total instances</span>
+            <strong>{{ total }}</strong>
+            <small>Virtual resources created</small>
+        </article>
+        <article class="stat">
+            <span>Running</span>
+            <strong class="green">{{ running }}</strong>
+            <small>Running instances</small>
+        </article>
+        <article class="stat">
+            <span>Stopped</span>
+            <strong>{{ stopped }}</strong>
+            <small>Available to restart</small>
+        </article>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <h2>Your instances</h2>
+                <p class="muted">Manage your simulated servers.</p>
+            </div>
+            <span class="tag">{{ total }} resources</span>
+        </div>
+
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name / ID</th>
+                        <th>Type</th>
+                        <th>Image</th>
+                        <th>State</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for i in instances %}
+                    <tr>
+                        <td><b>{{ i.name }}</b><small>{{ i.id }}</small></td>
+                        <td>{{ i.instance_type }}</td>
+                        <td>{{ i.image }}</td>
+                        <td><span class="state {{ i.state }}">{{ i.state }}</span></td>
+                        <td>
+                            <div class="actions">
+                                {% if i.state == 'running' %}
+                                <form method="post" action="{{ url_for('instance_action', instance_id=i.id, action='stop') }}">
+                                    <button class="secondary">Stop</button>
+                                </form>
+                                {% else %}
+                                <form method="post" action="{{ url_for('instance_action', instance_id=i.id, action='start') }}">
+                                    <button class="secondary">Start</button>
+                                </form>
+                                {% endif %}
+                                <form method="post" action="{{ url_for('instance_action', instance_id=i.id, action='terminate') }}" onsubmit="return confirm('Remove this virtual instance?')">
+                                    <button class="secondary danger">Terminate</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="empty">
+                            <strong>No instances yet</strong>
+                            <p>Create your first virtual server below.</p>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel" id="create">
+        <div class="panel-heading">
+            <div>
+                <h2>Launch a virtual instance</h2>
+                <p class="muted">Choose a configuration for your practice server.</p>
+            </div>
+            <span class="tag">LAB 01</span>
+        </div>
+
+        <form class="launch-form" method="post" action="{{ url_for('create_instance') }}">
+            <label>
+                Instance name
+                <input name="name" maxlength="60" placeholder="my-first-server" required>
+            </label>
+
+            <label>
+                Operating system
+                <select name="image">
+                    <option>Ubuntu Server 24.04</option>
+                    <option>Amazon Linux 2023</option>
+                </select>
+            </label>
+
+            <label>
+                Instance type
+                <select name="instance_type">
+                    <option>t3.micro</option>
+                    <option>t3.small</option>
+                    <option>t3.medium</option>
+                </select>
+            </label>
+
+            <label>
+                Region
+                <input value="Mumbai · ap-south-1" disabled>
+            </label>
+
+            <div class="form-footer">
+                <span>Simulated resource — no AWS charges.</span>
+                <button class="primary" type="submit">Launch instance</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="learn-grid" id="learn">
+        <article class="panel learn-card">
+            <p class="eyebrow">UNDERSTAND</p>
+            <h2>What is EC2?</h2>
+            <p>Amazon EC2 lets you run virtual servers in the cloud. You choose the operating system and computing capacity for your application.</p>
+            <p><b>Example:</b> Hosting a website on a cloud server instead of keeping your laptop switched on.</p>
+        </article>
+
+        <article class="panel learn-card">
+            <p class="eyebrow">KEY CONCEPT</p>
+            <h2>Instance states</h2>
+            <p><b>Running:</b> The simulated server is on.</p>
+            <p><b>Stopped:</b> The server is off but retained in this lab.</p>
+            <p><b>Terminated:</b> The simulated instance is removed.</p>
+        </article>
+    </section>
+
+    <section class="panel" id="activity">
+        <div class="panel-heading">
+            <div>
+                <h2>Recent activity</h2>
+                <p class="muted">Actions performed in this simulator.</p>
+            </div>
+        </div>
+
+        <div class="activity-list">
+            {% for a in activities %}
+            <div class="activity">
+                <span>●</span>
+                <div>{{ a.message }}<small>{{ a.created_at }}</small></div>
+            </div>
+            {% else %}
+            <p class="muted">No activity yet. Create your first virtual instance.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <footer>CloudLab · Educational simulator · Not connected to AWS</footer>
+</main>
+</body>
+</html>
+HTML

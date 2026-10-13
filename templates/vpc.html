@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloudSim | VPC Lab</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1120;color:#e5e7eb;font-family:Arial,sans-serif}
+header,main{padding:22px;max-width:1100px;margin:auto}
+a{color:#93c5fd;text-decoration:none}
+.panel{background:#111827;border:1px solid #334155;border-radius:12px;padding:20px;margin:18px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+label{display:block;margin:12px 0 6px;color:#cbd5e1}
+input,select{width:100%;padding:10px;background:#0b1120;color:white;border:1px solid #475569;border-radius:7px}
+button{margin-top:12px;padding:10px 14px;background:#2563eb;color:white;border:0;border-radius:7px;cursor:pointer}
+table{width:100%;border-collapse:collapse;min-width:540px}
+th,td{text-align:left;padding:11px;border-bottom:1px solid #334155}
+.wrap{overflow-x:auto}
+.flash{padding:12px;margin:10px 0;background:#164e35;border-radius:7px}
+.flash.error{background:#7f1d1d}
+small{color:#aab6ca}
+</style>
+</head>
+<body>
+<header>
+<a href="{{ url_for('index') }}">← CloudSim Home</a>
+<h1>🌐 VPC Networking Simulator</h1>
+<p>Practice VPCs, subnets, Internet Gateways and route tables.</p>
+<small>Local educational simulation only. No real AWS resources are created.</small>
+</header>
+<main>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% for category,message in messages %}
+<div class="flash {{ 'error' if category == 'error' else '' }}">{{ message }}</div>
+{% endfor %}
+{% endwith %}
+
+<div class="grid">
+<section class="panel">
+<h2>1. Create VPC</h2>
+<form method="post" action="{{ url_for('vpc.create_vpc') }}">
+<label>VPC name</label>
+<input name="name" placeholder="college-vpc" maxlength="60" required>
+<label>IPv4 CIDR</label>
+<input name="cidr" value="10.0.0.0/16" required>
+<button type="submit">Create VPC</button>
+</form>
+</section>
+
+<section class="panel">
+<h2>2. Create subnet</h2>
+<form method="post" action="{{ url_for('vpc.create_subnet') }}">
+<label>Select VPC</label>
+<select name="vpc_id" required>
+{% for v in vpcs %}
+<option value="{{ v.id }}">{{ v.name }} — {{ v.cidr }}</option>
+{% endfor %}
+</select>
+<label>Subnet name</label>
+<input name="name" placeholder="public-subnet-1" maxlength="60" required>
+<label>Subnet CIDR</label>
+<input name="cidr" value="10.0.2.0/24" required>
+<label>Subnet type</label>
+<select name="subnet_type">
+<option value="public">Public</option>
+<option value="private">Private</option>
+</select>
+<button type="submit" {% if not vpcs %}disabled{% endif %}>Create subnet</button>
+</form>
+{% if not vpcs %}<small>Create a VPC first.</small>{% endif %}
+</section>
+</div>
+
+<section class="panel">
+<h2>3. VPCs and Internet Gateway</h2>
+{% if vpcs %}
+<div class="wrap"><table>
+<tr><th>Name</th><th>CIDR</th><th>Gateway</th><th>Action</th></tr>
+{% for v in vpcs %}
+<tr>
+<td>{{ v.name }}</td><td>{{ v.cidr }}</td>
+<td>{{ 'Attached' if v.igw_attached else 'Not attached' }}</td>
+<td><form method="post" action="{{ url_for('vpc.toggle_igw',vpc_id=v.id) }}">
+<input type="hidden" name="action" value="{{ 'detach' if v.igw_attached else 'attach' }}">
+<button type="submit">{{ 'Detach IGW' if v.igw_attached else 'Attach IGW' }}</button>
+</form></td>
+</tr>
+{% endfor %}
+</table></div>
+{% else %}<p>No VPC created yet.</p>{% endif %}
+</section>
+
+<section class="panel">
+<h2>4. NAT Gateway</h2>
+<p><small>NAT Gateway ko IGW-attached VPC ke public subnet mein create karo.</small></p>
+<form method="post" action="{{ url_for('vpc.create_nat_gateway') }}">
+<label>NAT Gateway name</label>
+<input name="name" value="nat-gateway-1" maxlength="60" required>
+<label>Public subnet</label>
+<select name="public_subnet_id" required>
+{% for s in subnets if s.subnet_type == 'public' %}
+<option value="{{ s.id }}">{{ s.vpc_name }} — {{ s.name }} ({{ s.cidr }})</option>
+{% endfor %}
+</select>
+<button type="submit" {% if not subnets|selectattr('subnet_type', 'equalto', 'public')|list %}disabled{% endif %}>Create NAT Gateway</button>
+</form>
+{% if nat_gateways %}
+<div class="wrap"><table>
+<tr><th>Name</th><th>VPC</th><th>Public subnet</th><th>Status</th></tr>
+{% for n in nat_gateways %}
+<tr><td>{{ n.name }}</td><td>{{ n.vpc_name }}</td><td>{{ n.public_subnet_name }} ({{ n.public_subnet_cidr }})</td><td>Created</td></tr>
+{% endfor %}
+</table></div>
+{% else %}<p>No NAT Gateway created yet.</p>{% endif %}
+</section>
+
+<section class="panel">
+<h2>5. Subnets</h2>
+{% if subnets %}
+<div class="wrap"><table>
+<tr><th>Name</th><th>VPC</th><th>CIDR</th><th>Type</th><th>IGW</th></tr>
+{% for s in subnets %}
+<tr><td>{{ s.name }}</td><td>{{ s.vpc_name }}</td><td>{{ s.cidr }}</td>
+<td>{{ s.subnet_type|title }}</td><td>{{ 'Attached' if s.igw_attached else 'Not attached' }}</td></tr>
+{% endfor %}
+</table></div>
+{% else %}<p>No subnets created yet.</p>{% endif %}
+</section>
+
+<section class="panel">
+<h2>6. Route Table</h2>
+<small>Public route: 0.0.0.0/0 → IGW. Private outbound route: 0.0.0.0/0 → NAT.</small>
+<form method="post" action="{{ url_for('vpc.set_nat_route') }}">
+<label>Private subnet</label>
+<select name="subnet_id" required>
+{% for s in subnets if s.subnet_type == 'private' %}
+<option value="{{ s.id }}">{{ s.vpc_name }} — {{ s.name }} ({{ s.cidr }})</option>
+{% endfor %}
+</select>
+<button type="submit" {% if not subnets|selectattr('subnet_type', 'equalto', 'private')|list %}disabled{% endif %}>Route private subnet through NAT</button>
+</form>
+{% if routes %}
+<div class="wrap"><table>
+<tr><th>VPC</th><th>Subnet</th><th>Destination</th><th>Target</th></tr>
+{% for r in routes %}
+<tr><td>{{ r.vpc_name }}</td><td>{{ r.subnet_name }}</td><td>{{ r.destination }}</td><td>{{ r.target|upper }}</td></tr>
+{% endfor %}
+</table></div>
+{% else %}<p>No routes yet. Create a public subnet and attach its VPC's IGW.</p>{% endif %}
+</section>
+
+<section class="panel">
+<h2>7. Connectivity Test</h2>
+<small>Checks simulated routing only; it does not send network traffic.</small>
+<form method="post" action="{{ url_for('vpc.connectivity_test') }}">
+<label>Source subnet</label>
+<select name="subnet_id" required>
+{% for s in subnets %}
+<option value="{{ s.id }}">{{ s.name }} — {{ s.cidr }} ({{ s.subnet_type }})</option>
+{% endfor %}
+</select>
+<label>Destination IP</label>
+<input name="destination" value="8.8.8.8" required>
+<button type="submit" {% if not subnets %}disabled{% endif %}>Test connectivity</button>
+</form>
+{% if not subnets %}<small>Create a subnet before testing.</small>{% endif %}
+</section>
+</main>
+</body>
+</html>

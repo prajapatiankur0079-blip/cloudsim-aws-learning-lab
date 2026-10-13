@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloudSim | Learning Center</title>
+<style>
+:root{color-scheme:dark;--bg:#09111f;--panel:#111c2e;--border:#26364d;--muted:#9aabc2;--blue:#60a5fa;--text:#edf4ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+a{color:inherit;text-decoration:none}
+header{padding:18px 5%;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;background:#09111f}
+.logo{font-size:22px;font-weight:bold;color:var(--blue)}
+nav{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:#c3d1e5}
+main{max-width:1350px;margin:auto;padding:28px 22px}
+.hero,.panel,.topic{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:22px}
+.hero{background:linear-gradient(130deg,#142c49,#101a2b)}
+.eyebrow{color:#7dd3fc;font-size:11px;letter-spacing:1.8px;font-weight:bold}
+h1{font-size:clamp(29px,4vw,44px);margin:12px 0}
+h2{font-size:23px;margin:0 0 12px}
+h3{font-size:18px;margin:20px 0 8px;color:#93c5fd}
+p,li{font-size:14px;line-height:1.85;color:#c5d2e4}
+.muted{color:var(--muted)}
+.layout{display:grid;grid-template-columns:245px minmax(0,1fr);gap:20px;margin-top:22px;align-items:start}
+.sidebar{position:sticky;top:15px}
+.sidebar a{display:block;padding:11px;margin-top:5px;border-radius:7px;background:#0b1525;border:1px solid #25364d;font-size:13px}
+.sidebar a:hover{border-color:var(--blue);color:var(--blue)}
+.content{min-width:0}
+.topic{margin-bottom:18px;scroll-margin-top:18px}
+.tag{display:inline-block;padding:5px 9px;border-radius:20px;background:#193353;color:#93c5fd;font-size:11px;margin-bottom:8px}
+.flow{padding:15px;background:#0b1525;border:1px solid #30435d;border-radius:8px;color:#93c5fd;font-size:13px;line-height:2;overflow-wrap:anywhere}
+.note{padding:13px;border-left:3px solid #60a5fa;background:#0b1525;margin:12px 0;color:#c5d2e4;font-size:13px;line-height:1.8}
+code{color:#86efac;background:#0b1525;padding:3px 6px;border-radius:4px;overflow-wrap:anywhere}
+button{background:#2563eb;color:white;border:0;border-radius:7px;padding:10px 14px;cursor:pointer;margin:5px 5px 5px 0}
+button:hover{background:#1d4ed8}
+.answer{display:none;color:#86efac;font-size:13px;padding:8px 0}
+ul,ol{padding-left:22px}
+footer{text-align:center;color:#8799b2;font-size:12px;padding:25px}
+@media(max-width:760px){main{padding:16px 12px}.layout{grid-template-columns:1fr}.sidebar{position:static}.sidebar nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.hero,.panel,.topic{padding:16px}}
+</style>
+</head>
+<body>
+<header>
+<a class="logo" href="/">☁ CloudSim</a>
+<nav>
+<a href="/">Home</a>
+<a href="/practice/ec2">EC2 Lab</a>
+<a href="/practice/s3">S3 Lab</a>
+<a href="/vpc/">VPC Lab</a>
+</nav>
+</header>
+
+<main>
+<section class="hero">
+<div class="eyebrow">CLOUD ENGINEER LEARNING PATH</div>
+<h1>CloudSim Learning Center</h1>
+<p>Learn concepts step by step, understand how services work together, practise safely, and prepare for cloud engineering interviews.</p>
+<p class="muted">These notes are educational. Labs linked here use your local simulator unless explicitly stated otherwise.</p>
+</section>
+
+<div class="layout">
+<aside class="panel sidebar">
+<h2>Course contents</h2>
+<nav>
+<a href="#fundamentals">1. Cloud Fundamentals</a>
+<a href="#networking">2. Networking & VPC</a>
+<a href="#compute">3. Compute & EC2</a>
+<a href="#storage">4. Storage</a>
+<a href="#security">5. Security & IAM</a>
+<a href="#linux">6. Linux Essentials</a>
+<a href="#gitdocker">7. Git & Docker</a>
+<a href="#cicd">8. CI/CD & Jenkins</a>
+<a href="#monitoring">9. Monitoring</a>
+<a href="#interview">10. Interview Practice</a>
+</nav>
+</aside>
+
+<div class="content">
+
+<section class="topic" id="fundamentals">
+<span class="tag">MODULE 01 · FOUNDATION</span>
+<h2>Cloud Computing Fundamentals</h2>
+<h3>What is cloud computing?</h3>
+<p>Cloud computing means using computing resources—such as servers, storage, databases and networking—over a network when you need them. Instead of buying and maintaining every physical server yourself, you can rent resources from a cloud provider.</p>
+<h3>Why do companies use cloud?</h3>
+<ul>
+<li><b>On-demand:</b> create resources when required.</li>
+<li><b>Scalability:</b> increase or decrease capacity with workload.</li>
+<li><b>Pay for usage:</b> charges depend on the service and its pricing model.</li>
+<li><b>Global reach:</b> deploy services in different geographic regions.</li>
+<li><b>Managed services:</b> providers can handle some infrastructure maintenance.</li>
+</ul>
+<h3>Service models</h3>
+<ul>
+<li><b>IaaS:</b> virtual infrastructure such as virtual machines and networks.</li>
+<li><b>PaaS:</b> a managed platform for building and running applications.</li>
+<li><b>SaaS:</b> complete software delivered to users over a network.</li>
+</ul>
+<h3>Regions and Availability Zones</h3>
+<p>A Region is a separate geographic area. An Availability Zone is an isolated location within a Region. Using multiple Availability Zones can improve availability when an application is designed for it.</p>
+<div class="flow">User → DNS → Application → Compute → Database / Storage</div>
+<div class="note"><b>Real-world example:</b> An online shop may run its application on compute instances, store product images in object storage, and keep orders in a database.</div>
+<h3>Check your understanding</h3>
+<p>What is the main difference between scalability and availability?</p>
+<button onclick="toggleAnswer('a1')">Show answer</button>
+<div class="answer" id="a1">Scalability means adapting capacity to workload. Availability means keeping a service accessible when users need it.</div>
+</section>
+
+<section class="topic" id="networking">
+<span class="tag">MODULE 02 · NETWORKING</span>
+<h2>VPC, Subnets, Routing, IGW and NAT</h2>
+<h3>What is a VPC?</h3>
+<p>A Virtual Private Cloud is a logically isolated virtual network in AWS. You select an IP address range and place supported resources inside it.</p>
+<h3>What is CIDR?</h3>
+<p>CIDR represents an IP network and its prefix length. For example, <code>10.0.0.0/16</code> represents a larger IPv4 network than <code>10.0.1.0/24</code>. A subnet's CIDR must fit inside its VPC range and must not overlap another subnet in that VPC.</p>
+<h3>Public vs private subnet</h3>
+<p>A subnet is commonly called public when its route table provides a path to an Internet Gateway. A private subnet normally has no direct route to an Internet Gateway. Public IP assignment and security rules also affect actual reachability.</p>
+<h3>Internet Gateway (IGW)</h3>
+<p>An Internet Gateway connects a VPC to the internet when the required routes, public addressing and security rules are configured. Attaching an IGW alone does not make every resource publicly reachable.</p>
+<h3>NAT Gateway</h3>
+<p>A NAT Gateway allows resources in a private subnet to initiate supported outbound IPv4 connections to external destinations without accepting unsolicited internet-initiated connections through that NAT path.</p>
+<div class="flow">Private EC2 → Private Route Table (0.0.0.0/0 → NAT) → NAT Gateway in Public Subnet → Public Route Table (0.0.0.0/0 → IGW) → Internet</div>
+<h3>Route table</h3>
+<p>A route table contains destination networks and targets. The most specific matching route is used. The default IPv4 route is <code>0.0.0.0/0</code>.</p>
+<h3>Security Group vs Network ACL</h3>
+<ul>
+<li><b>Security Group:</b> stateful traffic rules associated with supported resources or network interfaces.</li>
+<li><b>Network ACL:</b> stateless subnet-level rules; inbound and outbound traffic are evaluated separately.</li>
+</ul>
+<div class="note"><b>Common troubleshooting order:</b> check subnet CIDR → route-table association → target route → IGW/NAT setup → public IP where needed → security rules → service listening port.</div>
+<p><a href="/vpc/"><button>Open VPC Practice Lab →</button></a></p>
+<button onclick="toggleAnswer('a2')">Quiz: Does a NAT Gateway replace an IGW?</button>
+<div class="answer" id="a2">No. For the common public NAT Gateway design, the public subnet's route to an IGW is also required.</div>
+</section>
+
+<section class="topic" id="compute">
+<span class="tag">MODULE 03 · COMPUTE</span>
+<h2>Amazon EC2 and Virtual Servers</h2>
+<h3>What is EC2?</h3>
+<p>Amazon EC2 provides virtual compute instances. You select an image, instance type, network configuration, storage and security settings.</p>
+<ul>
+<li><b>AMI:</b> a template used to launch an instance, including an operating system and other configured software.</li>
+<li><b>Instance type:</b> determines available CPU, memory, networking and other capabilities.</li>
+<li><b>EBS volume:</b> block storage that can persist independently of an instance, subject to its configuration.</li>
+<li><b>Security Group:</b> controls permitted network traffic.</li>
+<li><b>User Data:</b> can run bootstrapping commands during instance launch, depending on the operating system and configuration.</li>
+</ul>
+<h3>Instance lifecycle</h3>
+<div class="flow">Choose AMI → Configure instance → Launch → Running → Stop / Start / Terminate</div>
+<p>Stopping and starting an instance is different from terminating it. Termination removes the instance; attached storage behavior depends on its deletion settings.</p>
+<div class="note"><b>Practice:</b> use the local EC2 lab to create a simulated instance, stop it, start it and inspect its state. No real EC2 instance is created by this local action.</div>
+<p><a href="/practice/ec2"><button>Open EC2 Practice Lab →</button></a></p>
+</section>
+
+<section class="topic" id="storage">
+<span class="tag">MODULE 04 · STORAGE</span>
+<h2>S3, EBS and EFS</h2>
+<h3>Amazon S3 — Object storage</h3>
+<p>S3 stores objects in buckets. An object has data and metadata and is identified by a key within its bucket. Typical uses include backups, images, static files, logs and data archives.</p>
+<h3>Amazon EBS — Block storage</h3>
+<p>EBS provides block volumes commonly attached to EC2 instances. It is suitable for operating-system disks, application data and workloads that need block-level storage.</p>
+<h3>Amazon EFS — File storage</h3>
+<p>EFS provides managed shared file storage that supported compute resources can mount concurrently.</p>
+<div class="flow">S3 = Objects and keys | EBS = Disk blocks | EFS = Shared file system</div>
+<div class="note"><b>Remember:</b> storage type should be chosen according to access pattern, durability needs, performance, sharing requirements and cost.</div>
+<p><a href="/practice/s3"><button>Open S3 Practice Lab →</button></a></p>
+<button onclick="toggleAnswer('a4')">Quiz: Which service is object storage?</button>
+<div class="answer" id="a4">Amazon S3.</div>
+</section>
+
+<section class="topic" id="security">
+<span class="tag">MODULE 05 · SECURITY</span>
+<h2>IAM, Roles, Policies and KMS</h2>
+<h3>What is IAM?</h3>
+<p>Identity and Access Management controls who can access AWS resources and which actions they can perform. Policies describe permissions and can be attached to identities or resources where supported.</p>
+<h3>Users, groups and roles</h3>
+<ul>
+<li><b>User:</b> an identity for a person or workload that needs long-term IAM identity credentials where appropriate.</li>
+<li><b>Group:</b> a way to manage permissions for a collection of IAM users.</li>
+<li><b>Role:</b> an identity with permissions that can be assumed by a trusted principal to obtain temporary credentials.</li>
+</ul>
+<h3>Least privilege</h3>
+<p>Give only the permissions needed for the task. Avoid broad permissions such as unrestricted administrator access for everyday work. Review and remove permissions that are no longer required.</p>
+<h3>KMS</h3>
+<p>AWS Key Management Service helps create and manage cryptographic keys used to protect data. Key policies and permissions affect who can use keys.</p>
+<div class="note"><b>Security basics:</b> never commit secrets or private keys to GitHub; avoid hardcoding credentials; protect SSH private keys; use MFA where appropriate; and review access regularly.</div>
+<button onclick="toggleAnswer('a5')">Quiz: Should an application use an administrator policy for every task?</button>
+<div class="answer" id="a5">No. Follow least privilege and grant only the permissions required.</div>
+</section>
+
+<section class="topic" id="linux">
+<span class="tag">MODULE 06 · LINUX</span>
+<h2>Linux Essentials for Cloud Engineers</h2>
+<p>Linux is widely used for servers, containers and cloud workloads. Learn to navigate files, inspect processes, read logs and understand permissions.</p>
+<ul>
+<li><code>pwd</code> — print the current directory.</li>
+<li><code>ls -la</code> — list files, including hidden files.</li>
+<li><code>cd /path</code> — change directory.</li>
+<li><code>mkdir project</code> — create a directory.</li>
+<li><code>cp source destination</code> — copy a file.</li>
+<li><code>mv old new</code> — move or rename a file.</li>
+<li><code>grep "error" app.log</code> — search text in a log.</li>
+<li><code>tail -f app.log</code> — follow new log lines.</li>
+<li><code>ps aux</code> — inspect processes.</li>
+<li><code>df -h</code> — inspect filesystem space.</li>
+<li><code>free -h</code> — inspect memory usage.</li>
+<li><code>chmod</code> — change file permission bits.</li>
+</ul>
+<h3>Permission example</h3>
+<p>In <code>chmod 640 file.txt</code>, the owner gets read/write, the group gets read, and others get no permissions. Use permission changes carefully, especially on server configuration and secret files.</p>
+<h3>Logs troubleshooting flow</h3>
+<div class="flow">Confirm the symptom → Check service status → Read logs → Inspect ports and resources → Test again after one change</div>
+<div class="note">Practise these commands in your Ubuntu WSL environment before using them on a production server.</div>
+</section>
+
+<section class="topic" id="gitdocker">
+<span class="tag">MODULE 07 · DEVELOPER TOOLS</span>
+<h2>Git, GitHub and Docker</h2>
+<h3>Git vs GitHub</h3>
+<p>Git is a version-control tool that tracks changes to files. GitHub is a hosting and collaboration platform for Git repositories. Git keeps a history of changes; GitHub helps share code, review changes and collaborate.</p>
+<ul>
+<li><code>git status</code> — inspect working-tree changes.</li>
+<li><code>git add .</code> — stage current changes; inspect files first to avoid staging secrets.</li>
+<li><code>git commit -m "message"</code> — create a local commit.</li>
+<li><code>git push</code> — send commits to a configured remote.</li>
+<li><code>git pull</code> — fetch and integrate remote changes according to configuration.</li>
+</ul>
+<h3>What is Docker?</h3>
+<p>Docker packages an application and its dependencies into an image that can run as a container. Containers share the host kernel but are isolated using operating-system features; they are not full virtual machines.</p>
+<div class="flow">Application + Dependencies → Docker Image → Container → Logs / Ports / Volumes</div>
+<ul>
+<li><b>Image:</b> the packaged template.</li>
+<li><b>Container:</b> a running or stopped instance of an image.</li>
+<li><b>Dockerfile:</b> instructions for building an image.</li>
+<li><b>Volume:</b> storage used to persist or share data beyond a container's writable layer.</li>
+<li><b>Port mapping:</b> makes a container service reachable through a host port.</li>
+</ul>
+<p>GitHub stores and shares source code; Docker packages software and its runtime dependencies. They solve different problems and are commonly used together.</p>
+</section>
+
+<section class="topic" id="cicd">
+<span class="tag">MODULE 08 · AUTOMATION</span>
+<h2>CI/CD and Jenkins</h2>
+<p>Continuous Integration (CI) means integrating code changes frequently and running automated checks. Continuous Delivery or Deployment automates preparing or releasing tested changes.</p>
+<h3>Typical pipeline</h3>
+<div class="flow">Developer Push → Git Repository → Jenkins Pipeline → Build → Automated Tests → Package Image → Deploy → Verify</div>
+<h3>What does Jenkins do?</h3>
+<p>Jenkins automates workflows through jobs and pipelines. A pipeline can check out source code, install dependencies, run tests, build an artifact and deploy it to an environment.</p>
+<ul>
+<li>Store pipeline definitions in version control where practical.</li>
+<li>Keep credentials in a secrets mechanism, not source code.</li>
+<li>Fail the pipeline when required tests fail.</li>
+<li>Check logs and return codes when a stage fails.</li>
+<li>Use approvals and rollback plans appropriate to the environment.</li>
+</ul>
+<div class="note">A successful build does not automatically mean a safe deployment. Validate configuration, access, tests, health checks and rollback procedures.</div>
+</section>
+
+<section class="topic" id="monitoring">
+<span class="tag">MODULE 09 · OPERATIONS</span>
+<h2>CloudWatch, CloudTrail and Troubleshooting</h2>
+<h3>CloudWatch</h3>
+<p>CloudWatch is used for monitoring through metrics, logs, dashboards and alarms. Metrics are measurements; logs are event records. An alarm can change state when a configured condition is met.</p>
+<h3>CloudTrail</h3>
+<p>CloudTrail records supported AWS account activity and API events, helping investigate which principal performed an action and when.</p>
+<h3>Incident troubleshooting method</h3>
+<ol>
+<li>Define the problem and its impact.</li>
+<li>Identify what changed recently.</li>
+<li>Check service status, logs, metrics and permissions.</li>
+<li>Test network connectivity, DNS, routes and ports as appropriate.</li>
+<li>Make one controlled change at a time.</li>
+<li>Verify recovery and document the root cause.</li>
+</ol>
+<div class="note"><b>Example:</b> If a web page times out, investigate DNS resolution, network routes, firewall rules, server health and whether the application is listening on the expected port. Do not assume every timeout is a DNS problem.</div>
+</section>
+
+<section class="topic" id="interview">
+<span class="tag">MODULE 10 · CAREER</span>
+<h2>Cloud Engineer Interview Practice</h2>
+<h3>Question 1: What is the difference between a public and private subnet?</h3>
+<button onclick="toggleAnswer('i1')">Reveal sample answer</button>
+<div class="answer" id="i1">A public subnet has a route to an Internet Gateway. A private subnet generally does not have direct IGW routing. Actual internet reachability also depends on addressing, security rules and other configuration.</div>
+<h3>Question 2: What is the difference between S3 and EBS?</h3>
+<button onclick="toggleAnswer('i2')">Reveal sample answer</button>
+<div class="answer" id="i2">S3 is object storage accessed through APIs. EBS provides block volumes commonly attached to EC2 instances. They differ in access method, use cases and performance characteristics.</div>
+<h3>Question 3: Why use Docker?</h3>
+<button onclick="toggleAnswer('i3')">Reveal sample answer</button>
+<div class="answer" id="i3">Docker packages an application with its dependencies into an image so it can run in a more consistent container environment across supported systems.</div>
+<h3>Question 4: What is least privilege?</h3>
+<button onclick="toggleAnswer('i4')">Reveal sample answer</button>
+<div class="answer" id="i4">It means granting only the permissions needed to perform a task and avoiding unnecessary access.</div>
+<h3>Question 5: How would you troubleshoot a server that is unreachable?</h3>
+<button onclick="toggleAnswer('i5')">Reveal sample answer</button>
+<div class="answer" id="i5">Check the instance state, addressing, routes, security rules, network ACLs where relevant, listening service, operating-system firewall and logs. Test each layer systematically.</div>
+<div class="note"><b>Daily method:</b> study one concept, explain it aloud in your own words, perform one safe practical exercise, then answer two interview questions without looking at the notes.</div>
+</section>
+
+</div>
+</div>
+<footer>CloudSim Learning Center · Local educational simulator · Verify current AWS documentation before using real infrastructure.</footer>
+</main>
+
+<script>
+function toggleAnswer(id){
+ const element=document.getElementById(id);
+ if(element) element.style.display=element.style.display==="block"?"none":"block";
+}
+</script>
+</body>
+</html>

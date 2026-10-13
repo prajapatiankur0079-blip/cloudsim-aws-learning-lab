@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloudSim | Learn & Practice AWS</title>
+<style>
+:root{color-scheme:dark;--bg:#09111f;--panel:#111c2e;--border:#26364d;--muted:#9aabc2;--blue:#60a5fa;--text:#edf4ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+a{color:inherit;text-decoration:none}
+header{height:72px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;background:#09111ff2;z-index:5}
+.logo{font-size:23px;font-weight:800;color:var(--blue)}
+nav{display:flex;gap:22px;font-size:14px;color:#c3d1e5}
+nav a:hover,.link:hover{color:var(--blue)}
+main{max-width:1250px;margin:auto;padding:35px 24px}
+.hero{padding:36px 32px;border:1px solid #294464;border-radius:20px;background:radial-gradient(ellipse at 90% 10%,#1e4771 0,transparent 45%),linear-gradient(135deg,#14233b,#0c1525)}
+.eyebrow{font-size:12px;letter-spacing:2px;color:#7dd3fc;font-weight:bold}
+h1{font-size:clamp(32px,5vw,53px);line-height:1.1;margin:17px 0}
+.hero p{color:#b7c6dc;line-height:1.8;max-width:700px}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:23px}
+.btn{display:inline-block;padding:12px 17px;border-radius:8px;background:#2563eb;color:white;font-size:13px;font-weight:bold;border:1px solid transparent;cursor:pointer}
+.btn.secondary{background:#17263a;border-color:#40536c}
+.btn.disabled{background:#172334;color:#8b9bb0;cursor:default}
+.section{margin-top:38px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;flex-wrap:wrap;margin-bottom:18px}
+h2{font-size:23px;margin:0 0 8px}
+.muted{color:var(--muted);font-size:13px;line-height:1.7;margin:0}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+input,select{background:#111c2e;color:white;border:1px solid #34465f;border-radius:8px;padding:12px;font-size:14px}
+input{flex:1;min-width:220px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter{background:#111c2e;color:#b8c7dc;border:1px solid #34465f;border-radius:30px;padding:9px 14px;cursor:pointer}
+.filter.active{background:#1d426d;color:#fff;border-color:#4389d4}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:20px;display:flex;flex-direction:column;min-width:0}
+.card:hover{border-color:#4b719c}
+.card-top{display:flex;align-items:center;gap:12px}
+.symbol{font-size:26px;width:45px;height:45px;display:grid;place-items:center;background:#1c2c43;border-radius:11px;flex-shrink:0}
+.card h3{margin:0 0 5px;font-size:17px}
+.category{font-size:11px;color:#86bafa}
+.description{font-size:13px;line-height:1.7;color:#a9b9ce;margin:16px 0}
+.card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.card-actions .btn{padding:10px 12px;font-size:12px}
+.lesson{margin-top:14px;padding:13px;background:#0b1525;border:1px solid #2d4059;border-radius:9px;font-size:13px;line-height:1.8;color:#c8d6e8}
+.lesson strong{color:#7dd3fc}
+.status{font-size:10px;border:1px solid #36516e;padding:5px 8px;border-radius:20px;color:#9fc9ff;white-space:nowrap}
+.empty{display:none;color:var(--muted);padding:30px;text-align:center}
+.notice{margin-top:28px;padding:16px;border:1px solid #36465b;border-radius:10px;color:#a9bad0;font-size:12px;line-height:1.8}
+footer{border-top:1px solid var(--border);margin-top:40px;padding:25px 0;color:#8799b2;font-size:12px}
+[hidden]{display:none!important}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:550px){header{padding:0 16px;height:auto;min-height:65px}nav{gap:12px;font-size:12px}main{padding:22px 14px}.hero{padding:25px 19px}.grid{grid-template-columns:1fr}.section-head{align-items:flex-start}.tools{flex-direction:column}input{min-width:0;width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="/">☁ CloudSim</a>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/learning">Learning Center</a>
+    <a href="#catalog">Services</a>
+    <a href="#how">How to learn</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="eyebrow">YOUR CLOUD ENGINEERING LAB</div>
+    <h1>Learn Cloud.<br>Build Real Skills.</h1>
+    <p>Understand cloud concepts, explore AWS services, follow guided lessons and practise infrastructure operations in a safe local simulator.</p>
+    <div class="actions">
+      <a class="btn" href="#catalog">Explore Services ↓</a>
+      <a class="btn secondary" href="/practice/ec2">Start EC2 Practice →</a>
+      <a class="btn secondary" href="/practice/s3">Open S3 Lab →</a>
+    </div>
+  </section>
+
+  <section class="section" id="catalog">
+    <div class="section-head">
+      <div>
+        <h2>AWS Service Learning Center</h2>
+        <p class="muted">Search services, learn concepts and open available practice labs.</p>
+      </div>
+      <span class="status">Local simulator</span>
+    </div>
+
+    <div class="tools">
+      <input id="search" type="search" placeholder="Search EC2, Lambda, networking, databases..." aria-label="Search services">
+      <div class="filters" id="filters">
+        <button class="filter active" data-filter="all">All services</button>
+        <button class="filter" data-filter="compute">Compute</button>
+        <button class="filter" data-filter="storage">Storage</button>
+        <button class="filter" data-filter="database">Databases</button>
+        <button class="filter" data-filter="network">Networking</button>
+        <button class="filter" data-filter="security">Security</button>
+        <button class="filter" data-filter="monitor">Monitoring</button>
+        <button class="filter" data-filter="devops">DevOps & Messaging</button>
+      </div>
+    </div>
+
+    <div class="grid" id="serviceGrid">
+      <article class="card" data-category="compute" data-search="ec2 virtual machine server instance compute">
+        <div class="card-top"><div class="symbol">🖥️</div><div><h3>Amazon EC2</h3><div class="category">COMPUTE</div></div></div>
+        <p class="description">Virtual servers, instance types, AMIs and instance lifecycle management.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="ec2">Learn concepts</button><a class="btn" href="/practice/ec2">Practice →</a></div>
+        <div class="lesson" data-content="ec2" hidden><strong>What is EC2?</strong><br>EC2 provides virtual servers called instances. An AMI is the server image, an instance type defines compute capacity, and a security group controls network traffic. <br><strong>Practice:</strong> Launch, stop and start simulated instances in the EC2 Lab.</div>
+      </article>
+
+      <article class="card" data-category="storage" data-search="s3 bucket object storage files versioning">
+        <div class="card-top"><div class="symbol">🪣</div><div><h3>Amazon S3</h3><div class="category">STORAGE</div></div></div>
+        <p class="description">Object storage, buckets, object metadata, versioning and access concepts.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="s3">Learn concepts</button><a class="btn" href="/practice/s3">Practice →</a></div>
+        <div class="lesson" data-content="s3" hidden><strong>What is S3?</strong><br>S3 stores objects inside buckets. Object storage is useful for images, backups, logs and static files. Bucket names must be globally unique in real AWS. <br><strong>Practice:</strong> Create simulated buckets and add object metadata. This lab does not upload actual files to AWS.</div>
+      </article>
+
+      <article class="card" data-category="compute" data-search="lambda serverless function event trigger python">
+        <div class="card-top"><div class="symbol">λ</div><div><h3>AWS Lambda</h3><div class="category">SERVERLESS COMPUTE</div></div></div>
+        <p class="description">Functions, event-driven computing, execution roles, triggers and logs.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="lambda">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="lambda" hidden><strong>What is Lambda?</strong><br>Lambda runs code in response to events without requiring you to manage servers. Events can come from services such as S3, EventBridge or API Gateway. <br><strong>Example:</strong> An image uploaded to a bucket triggers a function. Real AWS execution and permissions are not configured in this learning preview.</div>
+      </article>
+
+      <article class="card" data-category="network" data-search="vpc subnet route table internet gateway nat security group networking">
+        <div class="card-top"><div class="symbol">🌐</div><div><h3>Amazon VPC</h3><div class="category">NETWORKING</div></div></div>
+        <p class="description">Virtual networks, subnets, routes, gateways and network security.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="vpc">Learn concepts</button><a class="btn" href="{{ url_for('vpc.dashboard') }}">Open Lab</a></div>
+        <div class="lesson" data-content="vpc" hidden><strong>What is VPC?</strong><br>A VPC is an isolated virtual network. Subnets divide its IP address range. Route tables decide where traffic goes. Internet and NAT gateways serve different connectivity needs.</div>
+      </article>
+
+      <article class="card" data-category="security" data-search="iam identity access management users roles policies permissions">
+        <div class="card-top"><div class="symbol">🔐</div><div><h3>AWS IAM</h3><div class="category">SECURITY</div></div></div>
+        <p class="description">Users, roles, policies, permissions and least-privilege access.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="iam">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="iam" hidden><strong>What is IAM?</strong><br>IAM controls who can access AWS resources and which actions they can perform. Policies define permissions. A role provides temporary credentials to a trusted identity or service.</div>
+      </article>
+
+      <article class="card" data-category="database" data-search="rds relational database mysql postgresql sql">
+        <div class="card-top"><div class="symbol">🗃️</div><div><h3>Amazon RDS</h3><div class="category">DATABASE</div></div></div>
+        <p class="description">Managed relational databases, SQL, backups and availability.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="rds">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="rds" hidden><strong>What is RDS?</strong><br>RDS helps operate relational database engines such as MySQL and PostgreSQL. Learn tables, SQL queries, backups, maintenance and multi-AZ availability.</div>
+      </article>
+
+      <article class="card" data-category="database" data-search="dynamodb nosql key value items tables">
+        <div class="card-top"><div class="symbol">⚡</div><div><h3>Amazon DynamoDB</h3><div class="category">DATABASE</div></div></div>
+        <p class="description">Managed NoSQL tables, keys, items and access patterns.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="dynamo">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="dynamo" hidden><strong>What is DynamoDB?</strong><br>DynamoDB is a managed NoSQL database. Tables contain items, and items contain attributes. Partition keys are important for distributing and retrieving data.</div>
+      </article>
+
+      <article class="card" data-category="storage" data-search="ebs elastic block storage disk volume snapshots">
+        <div class="card-top"><div class="symbol">💽</div><div><h3>Amazon EBS</h3><div class="category">STORAGE</div></div></div>
+        <p class="description">Block storage volumes, snapshots and persistent instance disks.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="ebs">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="ebs" hidden><strong>What is EBS?</strong><br>EBS provides block storage volumes commonly attached to EC2 instances. Snapshots help preserve volume data for recovery.</div>
+      </article>
+
+      <article class="card" data-category="network" data-search="route 53 dns domain records routing">
+        <div class="card-top"><div class="symbol">🧭</div><div><h3>Amazon Route 53</h3><div class="category">NETWORKING</div></div></div>
+        <p class="description">DNS concepts, hosted zones, records and routing policies.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="route53">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="route53" hidden><strong>What is Route 53?</strong><br>Route 53 is a DNS and domain-routing service. DNS records such as A, AAAA, CNAME and MX map names to destinations or services.</div>
+      </article>
+
+      <article class="card" data-category="network" data-search="cloudfront cdn cache edge locations">
+        <div class="card-top"><div class="symbol">🌍</div><div><h3>Amazon CloudFront</h3><div class="category">NETWORKING</div></div></div>
+        <p class="description">Content delivery, edge locations, caching and origin servers.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="cloudfront">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="cloudfront" hidden><strong>What is CloudFront?</strong><br>CloudFront is a content delivery network that caches content closer to users, helping reduce latency and origin load.</div>
+      </article>
+
+      <article class="card" data-category="network" data-search="api gateway rest http endpoints lambda">
+        <div class="card-top"><div class="symbol">🔗</div><div><h3>Amazon API Gateway</h3><div class="category">NETWORKING</div></div></div>
+        <p class="description">HTTP APIs, routes, requests and integration with Lambda.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="api">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="api" hidden><strong>What is API Gateway?</strong><br>API Gateway exposes application functionality through APIs. A route such as GET /users can connect a client request to backend code.</div>
+      </article>
+
+      <article class="card" data-category="monitor" data-search="cloudwatch metrics logs alarms monitoring">
+        <div class="card-top"><div class="symbol">📊</div><div><h3>Amazon CloudWatch</h3><div class="category">MONITORING</div></div></div>
+        <p class="description">Metrics, logs, dashboards, alarms and operational visibility.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="cloudwatch">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="cloudwatch" hidden><strong>What is CloudWatch?</strong><br>CloudWatch collects monitoring data. Metrics track measurements, logs record events, and alarms can react when configured thresholds are crossed.</div>
+      </article>
+
+      <article class="card" data-category="monitor" data-search="cloudtrail audit api activity security events">
+        <div class="card-top"><div class="symbol">📜</div><div><h3>AWS CloudTrail</h3><div class="category">MONITORING</div></div></div>
+        <p class="description">Audit AWS API activity and investigate account actions.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="cloudtrail">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="cloudtrail" hidden><strong>What is CloudTrail?</strong><br>CloudTrail records supported AWS account activity, helping teams understand who performed an action, what happened and when.</div>
+      </article>
+
+      <article class="card" data-category="devops" data-search="cloudformation infrastructure as code templates stacks">
+        <div class="card-top"><div class="symbol">🏗️</div><div><h3>AWS CloudFormation</h3><div class="category">DEVOPS</div></div></div>
+        <p class="description">Infrastructure as code, templates, stacks and repeatable deployments.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="cfn">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="cfn" hidden><strong>What is CloudFormation?</strong><br>CloudFormation describes supported AWS resources in templates so infrastructure can be created and updated consistently.</div>
+      </article>
+
+      <article class="card" data-category="devops" data-search="sqs queue messages asynchronous">
+        <div class="card-top"><div class="symbol">📥</div><div><h3>Amazon SQS</h3><div class="category">MESSAGING</div></div></div>
+        <p class="description">Message queues, decoupled services and asynchronous processing.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="sqs">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="sqs" hidden><strong>What is SQS?</strong><br>SQS lets one component send messages for another component to process later, reducing tight dependencies between services.</div>
+      </article>
+
+      <article class="card" data-category="devops" data-search="sns notifications topics subscribers publish">
+        <div class="card-top"><div class="symbol">🔔</div><div><h3>Amazon SNS</h3><div class="category">MESSAGING</div></div></div>
+        <p class="description">Topics, publishers, subscribers and notification fan-out.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="sns">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="sns" hidden><strong>What is SNS?</strong><br>SNS distributes published messages to subscribed endpoints. It is useful for notifications and event fan-out patterns.</div>
+      </article>
+
+      <article class="card" data-category="compute" data-search="ecs containers docker orchestration">
+        <div class="card-top"><div class="symbol">📦</div><div><h3>Amazon ECS</h3><div class="category">CONTAINERS</div></div></div>
+        <p class="description">Container orchestration, tasks, services and deployments.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="ecs">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="ecs" hidden><strong>What is ECS?</strong><br>ECS orchestrates container workloads. A task definition describes containers, tasks run them, and services help maintain desired task counts.</div>
+      </article>
+
+      <article class="card" data-category="compute" data-search="eks kubernetes clusters nodes pods containers">
+        <div class="card-top"><div class="symbol">☸️</div><div><h3>Amazon EKS</h3><div class="category">CONTAINERS</div></div></div>
+        <p class="description">Managed Kubernetes clusters, nodes, pods and workloads.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="eks">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="eks" hidden><strong>What is EKS?</strong><br>EKS provides a managed Kubernetes control plane. Kubernetes schedules containerized workloads in pods and manages desired state.</div>
+      </article>
+
+      <article class="card" data-category="devops" data-search="eventbridge events schedules rules serverless">
+        <div class="card-top"><div class="symbol">🪄</div><div><h3>Amazon EventBridge</h3><div class="category">EVENTS</div></div></div>
+        <p class="description">Event buses, matching rules, targets and event-driven systems.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="events">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="events" hidden><strong>What is EventBridge?</strong><br>EventBridge routes events that match configured rules to targets, enabling loosely coupled event-driven architectures.</div>
+      </article>
+
+      <article class="card" data-category="security" data-search="kms encryption keys cryptography">
+        <div class="card-top"><div class="symbol">🔑</div><div><h3>AWS KMS</h3><div class="category">SECURITY</div></div></div>
+        <p class="description">Encryption keys, key policies and data protection concepts.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="kms">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="kms" hidden><strong>What is KMS?</strong><br>KMS helps manage cryptographic keys used by supported AWS services and applications to protect data.</div>
+      </article>
+
+      <article class="card" data-category="storage" data-search="efs elastic file system shared file storage linux">
+        <div class="card-top"><div class="symbol">📁</div><div><h3>Amazon EFS</h3><div class="category">STORAGE</div></div></div>
+        <p class="description">Managed shared file storage for supported compute workloads.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="efs">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="efs" hidden><strong>What is EFS?</strong><br>EFS provides elastic file storage that multiple supported Linux-based compute resources can access concurrently.</div>
+      </article>
+
+      <article class="card" data-category="devops" data-search="codepipeline cicd continuous integration deployment automation">
+        <div class="card-top"><div class="symbol">🔄</div><div><h3>AWS CodePipeline</h3><div class="category">DEVOPS</div></div></div>
+        <p class="description">Automated delivery stages for building, testing and deploying software.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="pipeline">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="pipeline" hidden><strong>What is CI/CD?</strong><br>A delivery pipeline automates steps such as source retrieval, testing, building and deployment. Every stage should report success or failure.</div>
+      </article>
+
+      <article class="card" data-category="monitor" data-search="aws budgets cost explorer billing pricing">
+        <div class="card-top"><div class="symbol">💰</div><div><h3>AWS Budgets & Cost</h3><div class="category">COST MANAGEMENT</div></div></div>
+        <p class="description">Understand usage costs, budget thresholds, alerts and cost estimation.</p>
+        <div class="card-actions"><button class="btn secondary learn" data-lesson="cost">Learn concepts</button><span class="btn disabled">Lab planned</span></div>
+        <div class="lesson" data-content="cost" hidden><strong>What is cost management?</strong><br>Budgets and cost tools help track spending and alert you to thresholds. Simulated costs are educational estimates, not actual AWS billing data.</div>
+      </article>
+    </div>
+    <div class="empty" id="empty">No matching services found. Try a different search.</div>
+  </section>
+
+  <section class="section" id="how">
+    <h2>How your learning journey works</h2>
+    <p class="muted">Build understanding first, then practise, then test yourself.</p>
+    <div class="grid" style="margin-top:18px">
+      <article class="card"><div class="symbol">📘</div><h3>1. Learn</h3><p class="description">Study definitions, architecture, use cases and important interview concepts.</p></article>
+      <article class="card"><div class="symbol">⌨️</div><h3>2. Practice</h3><p class="description">Use guided labs to explore configurations and observe simulated results.</p></article>
+      <article class="card"><div class="symbol">🎯</div><h3>3. Challenge</h3><p class="description">Solve scenario-based tasks and quizzes. More guided exercises will be added module by module.</p></article>
+    </div>
+  </section>
+
+  <div class="notice"><strong>Simulation notice:</strong> This local learning site does not create real AWS resources. EC2 and S3 currently have local simulated operations. Other service cards provide introductory learning content; their practice labs are not implemented yet.</div>
+  <footer>CloudSim · Local AWS learning environment · Learn safely before deploying real cloud infrastructure.</footer>
+</main>
+
+<script>
+const search = document.getElementById("search");
+const cards = [...document.querySelectorAll(".card[data-category]")];
+const empty = document.getElementById("empty");
+let category = "all";
+
+function filterCards(){
+  const query = search.value.trim().toLowerCase();
+  let visible = 0;
+  cards.forEach(card => {
+    const matchesCategory = category === "all" || card.dataset.category === category;
+    const matchesSearch = (card.dataset.search + " " + card.innerText).toLowerCase().includes(query);
+    const show = matchesCategory && matchesSearch;
+    card.hidden = !show;
+    if(show) visible++;
+  });
+  empty.style.display = visible ? "none" : "block";
+}
+
+search.addEventListener("input", filterCards);
+document.querySelectorAll(".filter").forEach(button => {
+  button.addEventListener("click", () => {
+    category = button.dataset.filter;
+    document.querySelectorAll(".filter").forEach(item => item.classList.toggle("active", item === button));
+    filterCards();
+  });
+});
+
+document.querySelectorAll(".learn").forEach(button => {
+  button.addEventListener("click", () => {
+    const lesson = document.querySelector('[data-content="' + button.dataset.lesson + '"]');
+    const opening = lesson.hidden;
+    lesson.hidden = !opening;
+    button.textContent = opening ? "Hide lesson" : "Learn concepts";
+  });
+});
+</script>
+</body>
+</html>

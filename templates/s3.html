@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloudSim | S3 Lab</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #0b1120;
+    color: #e5e7eb;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    padding: 24px;
+    background: #111827;
+    border-bottom: 1px solid #273449;
+}
+
+header h1 {
+    margin: 0 0 8px;
+    font-size: 26px;
+}
+
+header p {
+    margin: 0;
+    color: #9ca3af;
+}
+
+main {
+    max-width: 1150px;
+    margin: 24px auto;
+    padding: 0 18px;
+}
+
+a {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin: 20px 0;
+}
+
+.panel {
+    background: #111827;
+    border: 1px solid #273449;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    min-width: 0;
+}
+
+h2 {
+    font-size: 19px;
+    margin: 0 0 18px;
+}
+
+label {
+    display: block;
+    margin: 14px 0 7px;
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+input,
+select {
+    display: block;
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #374151;
+    border-radius: 7px;
+    background: #0b1120;
+    color: #f9fafb;
+    font-size: 14px;
+}
+
+button {
+    margin-top: 15px;
+    padding: 10px 15px;
+    background: #2563eb;
+    border: 0;
+    border-radius: 7px;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+button.danger {
+    margin: 0;
+    padding: 8px 11px;
+    background: #991b1b;
+}
+
+button.danger:hover {
+    background: #b91c1c;
+}
+
+.muted {
+    color: #9ca3af;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.messages {
+    margin-bottom: 18px;
+}
+
+.message {
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background: #172554;
+    border: 1px solid #1d4ed8;
+    overflow-wrap: anywhere;
+}
+
+.message.error {
+    background: #450a0a;
+    border-color: #991b1b;
+}
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+th,
+td {
+    padding: 13px 12px;
+    text-align: left;
+    border-bottom: 1px solid #273449;
+    font-size: 14px;
+}
+
+th {
+    color: #93c5fd;
+    font-weight: 600;
+}
+
+td {
+    overflow-wrap: anywhere;
+}
+
+td form {
+    margin: 0;
+}
+
+.filter-row {
+    display: flex;
+    gap: 12px;
+    align-items: end;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.filter-field {
+    flex: 1;
+    min-width: 220px;
+}
+
+.filter-field label {
+    margin-top: 0;
+}
+
+.filter-row button {
+    margin-top: 0;
+}
+
+@media (max-width: 700px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    header {
+        padding: 20px 16px;
+    }
+
+    main {
+        padding: 0 12px;
+    }
+
+    .panel {
+        padding: 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>CloudSim — S3 Lab</h1>
+    <p>Practice buckets and object metadata in a local AWS simulator.</p>
+</header>
+
+<main>
+
+    <p><a href="{{ url_for('index') }}">← Back to CloudSim Home</a></p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="messages">
+            {% for category, message in messages %}
+            <div class="message {% if category == 'error' %}error{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="grid">
+
+        <section class="panel">
+            <h2>Create bucket</h2>
+
+            <form method="post" action="{{ url_for('s3_create_bucket') }}">
+                <label for="bucket-name">Bucket name</label>
+                <input
+                    id="bucket-name"
+                    name="name"
+                    placeholder="ankur-practice-bucket-01"
+                    required
+                    minlength="3"
+                    maxlength="63"
+                >
+
+                <label for="bucket-region">Region</label>
+                <select id="bucket-region" name="region">
+                    <option value="ap-south-1">Asia Pacific (Mumbai)</option>
+                    <option value="us-east-1">US East (N. Virginia)</option>
+                    <option value="eu-west-1">Europe (Ireland)</option>
+                </select>
+
+                <button type="submit">Create bucket</button>
+            </form>
+
+            <p class="muted">
+                This creates a simulated bucket in the local database,
+                not a real AWS S3 bucket.
+            </p>
+        </section>
+
+        <section class="panel">
+            <h2>Add object metadata</h2>
+
+            <form method="post" action="{{ url_for('s3_upload_object') }}">
+                <label for="object-bucket">Bucket</label>
+
+                <select id="object-bucket" name="bucket_id" required>
+                    {% for b in buckets %}
+                    <option value="{{ b.id }}">{{ b.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="object-name">Object / file name</label>
+                <input
+                    id="object-name"
+                    name="name"
+                    placeholder="notes.pdf"
+                    required
+                    maxlength="255"
+                >
+
+                <label for="content-type">Content type</label>
+                <select id="content-type" name="content_type">
+                    <option value="application/pdf">PDF</option>
+                    <option value="text/plain">Text</option>
+                    <option value="image/jpeg">JPEG image</option>
+                    <option value="application/json">JSON</option>
+                    <option value="application/octet-stream">Binary file</option>
+                </select>
+
+                <label for="object-size">Simulated size (KB)</label>
+                <input
+                    id="object-size"
+                    type="number"
+                    name="size_kb"
+                    min="0"
+                    max="5000000"
+                    value="100"
+                    required
+                >
+
+                <button type="submit" {% if not buckets %}disabled{% endif %}>
+                    Add object
+                </button>
+            </form>
+
+            <p class="muted">
+                Metadata only; the actual file is not uploaded.
+            </p>
+        </section>
+
+    </div>
+
+    <section class="panel">
+        <h2>Buckets ({{ buckets|length }})</h2>
+
+        {% if buckets %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Region</th>
+                        <th>Created</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for b in buckets %}
+                    <tr>
+                        <td>{{ b.name }}</td>
+                        <td>{{ b.region }}</td>
+                        <td>{{ b.created_at }}</td>
+                        <td>
+                            <form
+                                method="post"
+                                action="{{ url_for('s3_delete_bucket', bucket_id=b.id) }}"
+                                onsubmit="return confirm('Delete this bucket?')"
+                            >
+                                <button class="danger" type="submit">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="muted">No buckets yet. Create your first bucket above.</p>
+        {% endif %}
+    </section>
+
+    <section class="panel">
+        <h2>Objects ({{ objects|length }})</h2>
+
+        <form
+            class="filter-row"
+            method="get"
+            action="{{ url_for('s3_dashboard') }}"
+        >
+            <div class="filter-field">
+                <label for="bucket-filter">Filter objects by bucket</label>
+
+                <select
+                    id="bucket-filter"
+                    name="bucket"
+                    onchange="this.form.submit()"
+                >
+                    <option
+                        value="all"
+                        {% if selected_bucket == 'all' %}selected{% endif %}
+                    >
+                        All buckets
+                    </option>
+
+                    {% for b in buckets %}
+                    <option
+                        value="{{ b.id }}"
+                        {% if selected_bucket|string == b.id|string %}selected{% endif %}
+                    >
+                        {{ b.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <noscript>
+                <button type="submit">Apply filter</button>
+            </noscript>
+        </form>
+
+        {% if objects %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Object</th>
+                        <th>Bucket</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for o in objects %}
+                    <tr>
+                        <td>{{ o.name }}</td>
+                        <td>{{ o.bucket_name }}</td>
+                        <td>{{ o.content_type }}</td>
+                        <td>{{ o.size_kb }} KB</td>
+                        <td>
+                            <form
+                                method="post"
+                                action="{{ url_for('s3_delete_object', object_id=o.id) }}"
+                                onsubmit="return confirm('Delete this object?')"
+                            >
+                                <button class="danger" type="submit">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+        <p class="muted">
+            No objects found in this selection. Add object metadata above
+            or choose another bucket.
+        </p>
+        {% endif %}
+    </section>
+
+    <p class="muted">
+        CloudSim is a learning simulator. Actions on this page do not
+        create, upload to, or delete real AWS resources.
+    </p>
+
+</main>
+</body>
+</html>
