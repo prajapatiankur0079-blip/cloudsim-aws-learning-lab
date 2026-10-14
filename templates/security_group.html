@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloudSim | Security Group Lab</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#09111f;color:#edf4ff;font-family:Arial,sans-serif}
+header{padding:20px 5%;border-bottom:1px solid #26364d;display:flex;gap:15px;justify-content:space-between;flex-wrap:wrap}
+a{color:#93c5fd;text-decoration:none}main{max-width:1150px;margin:auto;padding:25px 18px}
+.panel{background:#111c2e;border:1px solid #26364d;border-radius:12px;padding:18px;margin:16px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+input,select{width:100%;padding:11px;margin:6px 0 12px;background:#09111f;color:white;border:1px solid #34465f;border-radius:7px}
+label,.muted{font-size:13px;color:#a9bad0}.muted{line-height:1.6}
+button{padding:10px 13px;background:#2563eb;color:white;border:0;border-radius:7px;cursor:pointer}
+.danger{background:#7f1d1d}.flash{padding:12px;margin:10px 0;background:#17263a;border-radius:7px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid #26364d}
+.table-wrap{overflow-x:auto}.note{padding:12px;background:#0b1525;border-radius:8px;font-size:13px;line-height:1.6}
+</style>
+</head>
+<body>
+<header><strong>☁ CloudSim / Security Group Lab</strong>
+<nav><a href="/">Home</a> &nbsp; <a href="/practice/vpc/">VPC Lab</a> &nbsp; <a href="/practice/ec2">EC2 Lab</a></nav></header>
+<main>
+<h1>Security Group Lab</h1>
+<p class="muted">Create groups, add inbound allow rules and simulate traffic. All changes are local; this lab does not contact AWS.</p>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% for category, message in messages %}<div class="flash">{{ message }}</div>{% endfor %}
+{% endwith %}
+
+<section class="panel">
+<h2>Create security group</h2>
+<form method="post" action="{{ url_for('security.create_group') }}">
+<div class="grid">
+<div><label>Group name</label><input name="name" maxlength="60" required placeholder="web-server-sg"></div>
+<div><label>Attach to VPC (optional)</label><select name="vpc_id"><option value="">No VPC selected</option>
+{% for vpc in vpcs %}<option value="{{ vpc.id }}">{{ vpc.name }} — {{ vpc.cidr }}</option>{% endfor %}
+</select></div></div>
+<label>Description</label><input name="description" maxlength="200" placeholder="Allow web traffic">
+<button type="submit">Create group</button></form>
+</section>
+
+<section class="panel"><h2>Security groups</h2>
+{% if groups %}<div class="grid">
+{% for group in groups %}<article class="panel">
+<h3>{{ group.name }}</h3><p class="muted">{{ group.description or 'No description' }}</p>
+<p class="muted">VPC: {{ group.vpc_name or 'Not linked' }} · {{ group.created_at }}</p>
+<form method="post" action="{{ url_for('security.create_rule', group_id=group.id) }}">
+<h3>Add inbound rule</h3>
+<label>Protocol</label><select name="protocol"><option value="tcp">TCP</option><option value="udp">UDP</option><option value="icmp">ICMP (no ports)</option><option value="all">All (no ports)</option></select>
+<div class="grid"><div><label>From port</label><input type="number" name="from_port" min="1" max="65535" placeholder="80"></div>
+<div><label>To port</label><input type="number" name="to_port" min="1" max="65535" placeholder="80"></div></div>
+<label>Source CIDR</label><input name="source_cidr" required placeholder="203.0.113.10/32">
+<button type="submit">Add rule</button></form>
+<form method="post" action="{{ url_for('security.delete_group', group_id=group.id) }}" onsubmit="return confirm('Delete group and its rules?')">
+<button class="danger" type="submit">Delete group</button></form>
+</article>{% endfor %}</div>
+{% else %}<p class="muted">No groups yet. Create one above.</p>{% endif %}
+</section>
+
+<section class="panel"><h2>Inbound rules</h2>
+{% if rules %}<div class="table-wrap"><table><thead><tr><th>Group</th><th>Protocol</th><th>Ports</th><th>Source CIDR</th><th>Action</th></tr></thead><tbody>
+{% for rule in rules %}<tr><td>{{ rule.group_name }}</td><td>{{ rule.protocol|upper }}</td>
+<td>{% if rule.from_port is not none %}{{ rule.from_port }}–{{ rule.to_port }}{% else %}N/A{% endif %}</td>
+<td>{{ rule.source_cidr }}</td><td><form method="post" action="{{ url_for('security.delete_rule', rule_id=rule.id) }}"><button class="danger">Delete</button></form></td></tr>{% endfor %}
+</tbody></table></div>{% else %}<p class="muted">No rules configured. Unmatched inbound traffic is denied.</p>{% endif %}
+</section>
+
+<section class="panel"><h2>Simulate inbound traffic</h2>
+<p class="muted">Traffic is allowed only when a rule matches the source IP, protocol and (for TCP/UDP) destination port.</p>
+<form method="post" action="{{ url_for('security.simulate') }}">
+<label>Security group</label><select name="group_id" required><option value="">Choose group</option>
+{% for group in groups %}<option value="{{ group.id }}">{{ group.name }}</option>{% endfor %}</select>
+<div class="grid"><div><label>Source IP</label><input name="source_ip" required placeholder="203.0.113.10"></div>
+<div><label>Protocol</label><select name="protocol"><option value="tcp">TCP</option><option value="udp">UDP</option><option value="icmp">ICMP</option></select></div>
+<div><label>Port (leave empty for ICMP)</label><input type="number" name="port" min="1" max="65535" placeholder="80"></div></div>
+<button type="submit">Simulate traffic</button></form>
+<p class="note">Learning note: AWS security groups are stateful. This simplified lab models inbound allow rules only; it does not reproduce every AWS networking behavior.</p>
+</section>
+</main></body></html>

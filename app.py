@@ -3,10 +3,12 @@ import sqlite3
 import uuid
 from datetime import datetime
 from vpc_lab import vpc_bp, init_vpc_db, init_nat_db
+from security_group_lab import security_bp, init_security_group_db
 
 app = Flask(__name__)
 app.secret_key = "cloudlab-secret-key"
 app.register_blueprint(vpc_bp)
+app.register_blueprint(security_bp)
 DB = "cloudlab.db"
 
 
@@ -451,6 +453,7 @@ def s3_delete_bucket(bucket_id):
 init_db()
 init_vpc_db()
 init_nat_db()
+init_security_group_db()
 
 if __name__ == "__main__":
     print("CloudLab is starting...")
