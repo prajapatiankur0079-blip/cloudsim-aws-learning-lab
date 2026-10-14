@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloudSim | Route 53 DNS Lab</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1120;color:#e5e7eb;font-family:Arial,sans-serif}
+header{padding:18px 6%;border-bottom:1px solid #263247;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+a{color:#93c5fd;text-decoration:none}
+main{max-width:1150px;margin:28px auto;padding:0 18px}
+h1{margin-bottom:8px}
+.muted{color:#9ca3af;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.panel{background:#111c30;border:1px solid #263247;border-radius:13px;padding:20px;margin:18px 0}
+input,select{width:100%;padding:11px;margin:7px 0 14px;border:1px solid #37465f;border-radius:7px;background:#0b1120;color:#e5e7eb}
+button,.btn{display:inline-block;border:0;border-radius:7px;background:#2563eb;color:white;padding:10px 14px;cursor:pointer;font-size:14px}
+.danger{background:#991b1b}
+label{font-size:13px;color:#cbd5e1}
+.flash{padding:12px;margin:10px 0;border-radius:7px;background:#172554}
+.flash.error{background:#451a1a}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid #263247;vertical-align:top}
+th{color:#93c5fd}
+.table-wrap{overflow-x:auto}
+.inline{display:inline}
+small{color:#9ca3af}
+</style>
+</head>
+<body>
+<header>
+  <strong>☁ CloudSim / Route 53 DNS Lab</strong>
+  <nav><a href="/">Home</a> &nbsp; <a href="/learning">Learning Center</a></nav>
+</header>
+
+<main>
+<h1>🧭 Route 53 DNS Lab</h1>
+<p class="muted">Create simulated hosted zones, manage DNS records, and test name lookups. This lab does not create real AWS resources.</p>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% for category, message in messages %}
+<div class="flash {{ category }}">{{ message }}</div>
+{% endfor %}
+{% endwith %}
+
+<div class="grid">
+<section class="panel">
+<h2>Create Hosted Zone</h2>
+<p class="muted">Example: example.com</p>
+<form method="post" action="{{ url_for('route53.create_zone') }}">
+<label for="domain">Domain name</label>
+<input id="domain" name="domain" placeholder="example.com" required maxlength="253">
+<button type="submit">Create Zone</button>
+</form>
+</section>
+
+<section class="panel">
+<h2>DNS Lookup</h2>
+<p class="muted">Search a saved domain or record name.</p>
+<form method="get" action="{{ url_for('route53.lookup') }}">
+<label for="lookup-domain">Domain / record name</label>
+<input id="lookup-domain" name="domain" placeholder="www.example.com" required>
+<button type="submit">Resolve DNS</button>
+</form>
+</section>
+</div>
+
+<section class="panel">
+<h2>Hosted Zones ({{ zones|length }})</h2>
+{% if zones %}
+<div class="table-wrap">
+<table>
+<thead><tr><th>Domain</th><th>Created</th><th>Action</th></tr></thead>
+<tbody>
+{% for zone in zones %}
+<tr>
+<td>{{ zone.domain }}</td>
+<td>{{ zone.created_at }}</td>
+<td>
+<form class="inline" method="post" action="{{ url_for('route53.delete_zone', zone_id=zone.id) }}" onsubmit="return confirm('Delete this zone and all its records?')">
+<button class="danger" type="submit">Delete</button>
+</form>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<p class="muted">No hosted zones yet. Create your first zone above.</p>
+{% endif %}
+</section>
+
+<section class="panel">
+<h2>Create DNS Record</h2>
+<form method="post" action="{{ url_for('route53.create_record') }}">
+<label for="zone-id">Hosted zone</label>
+<select id="zone-id" name="zone_id" required>
+<option value="">Choose a hosted zone</option>
+{% for zone in zones %}
+<option value="{{ zone.id }}">{{ zone.domain }}</option>
+{% endfor %}
+</select>
+
+<label for="record-name">Record name</label>
+<input id="record-name" name="record_name" placeholder="@ or www.example.com" required>
+
+<label for="record-type">Record type</label>
+<select id="record-type" name="record_type" required>
+<option value="A">A — IPv4 address</option>
+<option value="CNAME">CNAME — Alias to another domain</option>
+<option value="MX">MX — Mail server</option>
+<option value="TXT">TXT — Text value</option>
+</select>
+
+<label for="record-value">Record value</label>
+<input id="record-value" name="record_value" placeholder="192.0.2.10" required>
+
+<label for="ttl">TTL in seconds</label>
+<input id="ttl" name="ttl" type="number" min="1" max="2147483647" value="300" required>
+
+<button type="submit" {% if not zones %}disabled{% endif %}>Add DNS Record</button>
+{% if not zones %}<p class="muted">Create a hosted zone first.</p>{% endif %}
+</form>
+<p class="muted"><small>Examples: A = 192.0.2.10; CNAME = target.example.net; MX = 10 mail.example.com; TXT = hello-world.</small></p>
+</section>
+
+<section class="panel">
+<h2>DNS Records ({{ records|length }})</h2>
+{% if records %}
+<div class="table-wrap">
+<table>
+<thead><tr><th>Zone</th><th>Name</th><th>Type</th><th>Value</th><th>TTL</th><th>Action</th></tr></thead>
+<tbody>
+{% for record in records %}
+<tr>
+<td>{{ record.zone_domain }}</td>
+<td>{{ record.record_name }}</td>
+<td>{{ record.record_type }}</td>
+<td>{{ record.record_value }}</td>
+<td>{{ record.ttl }}</td>
+<td>
+<form method="post" action="{{ url_for('route53.delete_record', record_id=record.id) }}" onsubmit="return confirm('Delete this DNS record?')">
+<button class="danger" type="submit">Delete</button>
+</form>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<p class="muted">No DNS records created yet.</p>
+{% endif %}
+</section>
+</main>
+</body>
+</html>

@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloudSim | DNS Lookup Results</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:#0b1120;color:#e5e7eb;font-family:Arial,sans-serif}
+main{max-width:1000px;margin:auto}
+.panel{background:#111c30;border:1px solid #263247;border-radius:12px;padding:20px;margin:18px 0}
+a{color:#93c5fd;text-decoration:none}
+.muted{color:#9ca3af}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid #263247}
+th{color:#93c5fd}
+.table-wrap{overflow-x:auto}
+.flash{padding:12px;margin:10px 0;border-radius:7px;background:#172554}
+.flash.error{background:#451a1a}
+</style>
+</head>
+<body>
+<main>
+<p><a href="{{ url_for('route53.dashboard') }}">← Back to Route 53 Lab</a></p>
+<h1>DNS Lookup Results</h1>
+<section class="panel">
+<p class="muted">Search query</p>
+<h2>{{ query }}</h2>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% for category, message in messages %}
+<div class="flash {{ category }}">{{ message }}</div>
+{% endfor %}
+{% endwith %}
+
+{% if records %}
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Hosted Zone</th>
+<th>Record Name</th>
+<th>Type</th>
+<th>Value</th>
+<th>TTL (seconds)</th>
+</tr>
+</thead>
+<tbody>
+{% for record in records %}
+<tr>
+<td>{{ record.zone_domain }}</td>
+<td>{{ record.record_name }}</td>
+<td>{{ record.record_type }}</td>
+<td>{{ record.record_value }}</td>
+<td>{{ record.ttl }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<p class="muted">No matching records were found in the local simulator.</p>
+{% endif %}
+</section>
+<p class="muted">These results come only from the CloudSim SQLite database. This page does not query public DNS or AWS Route 53.</p>
+</main>
+</body>
+</html>
