@@ -777,3 +777,99 @@ def test_nat_gateway_rejects_private_subnet(client):
     ).fetchone()[0]
     conn.close()
     assert count == 0
+
+
+def test_igw_attach_detach_and_public_subnet_routing(client):
+    import vpc_lab
+
+    # Create a VPC and public subnet.
+    client.post(
+        "/practice/vpc/create",
+        data={"name": "IGW Regression VPC", "cidr": "10.40.0.0/16"},
+        follow_redirects=True,
+    )
+
+    conn = vpc_lab.db()
+    vpc = conn.execute(
+        "SELECT id FROM vpcs WHERE name = ?",
+        ("IGW Regression VPC",),
+    ).fetchone()
+    conn.close()
+    assert vpc is not None
+
+    vpc_id = vpc["id"]
+
+    client.post(
+        "/practice/vpc/subnet/create",
+        data={
+            "vpc_id": str(vpc_id),
+            "name": "IGW Public Subnet",
+            "cidr": "10.40.1.0/24",
+            "subnet_type": "public",
+        },
+        follow_redirects=True,
+    )
+
+    conn = vpc_lab.db()
+    subnet = conn.execute(
+        "SELECT id FROM vpc_subnets WHERE vpc_id = ? AND name = ?",
+        (vpc_id, "IGW Public Subnet"),
+    ).fetchone()
+    conn.close()
+    assert subnet is not None
+
+    subnet_id = subnet["id"]
+
+    # Attach IGW and verify the default route.
+    attached = client.post(
+        f"/practice/vpc/{vpc_id}/internet-gateway",
+        data={"action": "attach"},
+        follow_redirects=True,
+    )
+    assert attached.status_code == 200
+
+    conn = vpc_lab.db()
+    route = conn.execute(
+        "SELECT target FROM vpc_routes "
+        "WHERE subnet_id = ? AND destination = '0.0.0.0/0'",
+        (subnet_id,),
+    ).fetchone()
+    conn.close()
+    assert route is not None
+    assert route["target"] == "igw"
+
+    # Public connectivity should pass while IGW is attached.
+    allowed = client.post(
+        "/practice/vpc/connectivity-test",
+        data={"subnet_id": str(subnet_id), "destination": "8.8.8.8"},
+        follow_redirects=True,
+    )
+    assert allowed.status_code == 200
+    assert b"SIMULATED PASS" in allowed.data
+    assert b"IGW ke through" in allowed.data
+
+    # Detach IGW and confirm its default route is removed.
+    detached = client.post(
+        f"/practice/vpc/{vpc_id}/internet-gateway",
+        data={"action": "detach"},
+        follow_redirects=True,
+    )
+    assert detached.status_code == 200
+
+    conn = vpc_lab.db()
+    route = conn.execute(
+        "SELECT target FROM vpc_routes "
+        "WHERE subnet_id = ? AND destination = '0.0.0.0/0'",
+        (subnet_id,),
+    ).fetchone()
+    conn.close()
+    assert route is None
+
+    # Connectivity should now be blocked.
+    blocked = client.post(
+        "/practice/vpc/connectivity-test",
+        data={"subnet_id": str(subnet_id), "destination": "8.8.8.8"},
+        follow_redirects=True,
+    )
+    assert blocked.status_code == 200
+    assert b"SIMULATED BLOCK" in blocked.data
