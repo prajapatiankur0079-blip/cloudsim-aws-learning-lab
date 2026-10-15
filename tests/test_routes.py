@@ -385,3 +385,220 @@ def test_s3_duplicate_bucket_is_rejected(client):
     conn.close()
 
     assert count == 1
+
+
+def test_vpc_creation_and_overlapping_subnet_rejection(client):
+    import vpc_lab
+
+    response = client.post(
+        "/practice/vpc/create",
+        data={"name": "Test VPC", "cidr": "10.0.0.0/16"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    conn = vpc_lab.db()
+    vpc = conn.execute(
+        "SELECT id FROM vpcs WHERE name = ?", ("Test VPC",)
+    ).fetchone()
+    conn.close()
+    assert vpc is not None
+
+    response = client.post(
+        "/practice/vpc/subnet/create",
+        data={
+            "vpc_id": str(vpc["id"]),
+            "name": "Public Subnet",
+            "cidr": "10.0.1.0/24",
+            "subnet_type": "public",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    response = client.post(
+        "/practice/vpc/subnet/create",
+        data={
+            "vpc_id": str(vpc["id"]),
+            "name": "Overlapping Subnet",
+            "cidr": "10.0.1.128/25",
+            "subnet_type": "private",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    conn = vpc_lab.db()
+    subnets = conn.execute(
+        "SELECT COUNT(*) FROM vpc_subnets WHERE vpc_id = ?",
+        (vpc["id"],),
+    ).fetchone()[0]
+    conn.close()
+    assert subnets == 1
+
+
+def test_security_group_rule_allows_and_denies_traffic(client):
+    import security_group_lab
+
+    response = client.post(
+        "/practice/security-groups/create",
+        data={"name": "Test Web SG", "description": "Regression test"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    conn = security_group_lab.db()
+    group = conn.execute(
+        "SELECT id FROM security_groups WHERE name = ?",
+        ("Test Web SG",),
+    ).fetchone()
+    conn.close()
+    assert group is not None
+
+    response = client.post(
+        f"/practice/security-groups/{group['id']}/rule/create",
+        data={
+            "protocol": "tcp",
+            "source_cidr": "203.0.113.0/24",
+            "from_port": "80",
+            "to_port": "80",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    conn = security_group_lab.db()
+    rules = conn.execute(
+        "SELECT COUNT(*) FROM security_group_rules WHERE group_id = ?",
+        (group["id"],),
+    ).fetchone()[0]
+    conn.close()
+    assert rules == 1
+
+    allowed = client.post(
+        "/practice/security-groups/simulate",
+        data={
+            "source_ip": "203.0.113.10",
+            "group_id": str(group["id"]),
+            "protocol": "tcp",
+            "port": "80",
+        },
+        follow_redirects=True,
+    )
+    assert allowed.status_code == 200
+    assert b"ALLOWED" in allowed.data
+
+    denied = client.post(
+        "/practice/security-groups/simulate",
+        data={
+            "source_ip": "198.51.100.10",
+            "group_id": str(group["id"]),
+            "protocol": "tcp",
+            "port": "80",
+        },
+        follow_redirects=True,
+    )
+    assert denied.status_code == 200
+    assert b"DENIED" in denied.data
+
+
+def test_route53_creates_a_record_and_finds_it(client):
+    import route53_lab
+
+    response = client.post(
+        "/practice/route53/zone/create",
+        data={"domain": "example.com"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    conn = route53_lab.db()
+    zone = conn.execute(
+        "SELECT id FROM hosted_zones WHERE domain = ?",
+        ("example.com",),
+    ).fetchone()
+    conn.close()
+    assert zone is not None
+
+    response = client.post(
+        "/practice/route53/record/create",
+        data={
+            "zone_id": str(zone["id"]),
+            "record_name": "www.example.com",
+            "record_type": "A",
+            "record_value": "192.0.2.10",
+            "ttl": "300",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    lookup = client.get(
+        "/practice/route53/lookup?domain=www.example.com"
+    )
+    assert lookup.status_code == 200
+    assert b"192.0.2.10" in lookup.data
+
+
+def test_route53_rejects_invalid_a_record_ip(client):
+    import route53_lab
+
+    client.post(
+        "/practice/route53/zone/create",
+        data={"domain": "example.com"},
+        follow_redirects=True,
+    )
+
+    conn = route53_lab.db()
+    zone = conn.execute(
+        "SELECT id FROM hosted_zones WHERE domain = ?",
+        ("example.com",),
+    ).fetchone()
+    conn.close()
+    assert zone is not None
+
+    response = client.post(
+        "/practice/route53/record/create",
+        data={
+            "zone_id": str(zone["id"]),
+            "record_name": "www.example.com",
+            "record_type": "A",
+            "record_value": "not-an-ip",
+            "ttl": "300",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    conn = route53_lab.db()
+    count = conn.execute(
+        "SELECT COUNT(*) FROM dns_records WHERE zone_id = ?",
+        (zone["id"],),
+    ).fetchone()[0]
+    conn.close()
+    assert count == 0
+
+
+def test_route53_rejects_duplicate_hosted_zone(client):
+    client.post(
+        "/practice/route53/zone/create",
+        data={"domain": "example.com"},
+        follow_redirects=True,
+    )
+
+    response = client.post(
+        "/practice/route53/zone/create",
+        data={"domain": "EXAMPLE.COM"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    import route53_lab
+
+    conn = route53_lab.db()
+    count = conn.execute(
+        "SELECT COUNT(*) FROM hosted_zones WHERE lower(domain) = ?",
+        ("example.com",),
+    ).fetchone()[0]
+    conn.close()
+    assert count == 1
