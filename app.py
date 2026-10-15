@@ -1,3 +1,5 @@
+import secrets
+import os
 from flask import Flask, render_template, request, redirect, url_for, flash
 import sqlite3
 import uuid
@@ -7,7 +9,7 @@ from security_group_lab import security_bp, init_security_group_db
 from route53_lab import route53_bp, init_route53_db
 
 app = Flask(__name__)
-app.secret_key = "cloudlab-secret-key"
+app.secret_key = os.environ.get("CLOUDSIM_SECRET_KEY") or secrets.token_hex(32)
 app.register_blueprint(vpc_bp)
 app.register_blueprint(security_bp)
 app.register_blueprint(route53_bp)
