@@ -602,3 +602,178 @@ def test_route53_rejects_duplicate_hosted_zone(client):
     ).fetchone()[0]
     conn.close()
     assert count == 1
+
+
+def test_nat_gateway_and_private_subnet_connectivity(client):
+    import vpc_lab
+
+    # Create a VPC and public/private subnets.
+    client.post(
+        "/practice/vpc/create",
+        data={"name": "NAT Test VPC", "cidr": "10.20.0.0/16"},
+        follow_redirects=True,
+    )
+
+    conn = vpc_lab.db()
+    vpc = conn.execute(
+        "SELECT id FROM vpcs WHERE name = ?", ("NAT Test VPC",)
+    ).fetchone()
+    conn.close()
+    assert vpc is not None
+
+    vpc_id = vpc["id"]
+
+    client.post(
+        f"/practice/vpc/{vpc_id}/internet-gateway",
+        data={"action": "attach"},
+        follow_redirects=True,
+    )
+
+    client.post(
+        "/practice/vpc/subnet/create",
+        data={
+            "vpc_id": str(vpc_id),
+            "name": "NAT Public",
+            "cidr": "10.20.1.0/24",
+            "subnet_type": "public",
+        },
+        follow_redirects=True,
+    )
+    client.post(
+        "/practice/vpc/subnet/create",
+        data={
+            "vpc_id": str(vpc_id),
+            "name": "NAT Private",
+            "cidr": "10.20.2.0/24",
+            "subnet_type": "private",
+        },
+        follow_redirects=True,
+    )
+
+    conn = vpc_lab.db()
+    public_subnet = conn.execute(
+        "SELECT id FROM vpc_subnets WHERE vpc_id = ? AND name = ?",
+        (vpc_id, "NAT Public"),
+    ).fetchone()
+    private_subnet = conn.execute(
+        "SELECT id FROM vpc_subnets WHERE vpc_id = ? AND name = ?",
+        (vpc_id, "NAT Private"),
+    ).fetchone()
+    conn.close()
+    assert public_subnet is not None
+    assert private_subnet is not None
+
+    # A public subnet without NAT should not pass as a private subnet.
+    blocked = client.post(
+        "/practice/vpc/connectivity-test",
+        data={
+            "subnet_id": str(private_subnet["id"]),
+            "destination": "8.8.8.8",
+        },
+        follow_redirects=True,
+    )
+    assert blocked.status_code == 200
+    assert b"SIMULATED BLOCK" in blocked.data
+
+    # NAT creation should work after IGW attachment and public routing.
+    created = client.post(
+        "/practice/vpc/nat/create",
+        data={
+            "public_subnet_id": str(public_subnet["id"]),
+            "name": "Test NAT",
+        },
+        follow_redirects=True,
+    )
+    assert created.status_code == 200
+
+    conn = vpc_lab.db()
+    nat = conn.execute(
+        "SELECT id FROM vpc_nat_gateways WHERE vpc_id = ?", (vpc_id,)
+    ).fetchone()
+    conn.close()
+    assert nat is not None
+
+    # Configure the private subnet's default route through NAT.
+    routed = client.post(
+        "/practice/vpc/nat/route",
+        data={"subnet_id": str(private_subnet["id"])},
+        follow_redirects=True,
+    )
+    assert routed.status_code == 200
+
+    conn = vpc_lab.db()
+    route = conn.execute(
+        "SELECT target FROM vpc_routes WHERE subnet_id = ? "
+        "AND destination = '0.0.0.0/0'",
+        (private_subnet["id"],),
+    ).fetchone()
+    conn.close()
+    assert route is not None
+    assert route["target"] == "nat"
+
+    allowed = client.post(
+        "/practice/vpc/connectivity-test",
+        data={
+            "subnet_id": str(private_subnet["id"]),
+            "destination": "8.8.8.8",
+        },
+        follow_redirects=True,
+    )
+    assert allowed.status_code == 200
+    assert b"SIMULATED PASS" in allowed.data
+    assert b"NAT Gateway ke through" in allowed.data
+
+
+def test_nat_gateway_rejects_private_subnet(client):
+    import vpc_lab
+
+    client.post(
+        "/practice/vpc/create",
+        data={"name": "Invalid NAT VPC", "cidr": "10.30.0.0/16"},
+        follow_redirects=True,
+    )
+
+    conn = vpc_lab.db()
+    vpc = conn.execute(
+        "SELECT id FROM vpcs WHERE name = ?", ("Invalid NAT VPC",)
+    ).fetchone()
+    conn.close()
+    assert vpc is not None
+
+    vpc_id = vpc["id"]
+    client.post(
+        "/practice/vpc/subnet/create",
+        data={
+            "vpc_id": str(vpc_id),
+            "name": "Private Only",
+            "cidr": "10.30.1.0/24",
+            "subnet_type": "private",
+        },
+        follow_redirects=True,
+    )
+
+    conn = vpc_lab.db()
+    private_subnet = conn.execute(
+        "SELECT id FROM vpc_subnets WHERE vpc_id = ?",
+        (vpc_id,),
+    ).fetchone()
+    conn.close()
+    assert private_subnet is not None
+
+    response = client.post(
+        "/practice/vpc/nat/create",
+        data={
+            "public_subnet_id": str(private_subnet["id"]),
+            "name": "Invalid NAT",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    conn = vpc_lab.db()
+    count = conn.execute(
+        "SELECT COUNT(*) FROM vpc_nat_gateways WHERE vpc_id = ?",
+        (vpc_id,),
+    ).fetchone()[0]
+    conn.close()
+    assert count == 0
