@@ -154,15 +154,6 @@ def create_subnet():
         "SELECT cidr FROM vpc_subnets WHERE vpc_id = ?", (vpc_id,)
     ).fetchall()
 
-    print(
-        "SUBNET DEBUG:",
-        "vpc_id=", vpc_id,
-        "vpc_cidr=", vpc["cidr"],
-        "submitted_cidr=", str(network),
-        "existing_subnets=", [row["cidr"] for row in existing],
-        flush=True,
-    )
-
     if any(network.overlaps(ipaddress.ip_network(row["cidr"])) for row in existing):
         conn.close()
         flash("Subnet CIDR existing subnet se overlap karta hai.", "error")

@@ -8,3 +8,13 @@ cloudlab.db-shm
 cloudlab.db-wal
 instance/
 .pytest_cache/
+
+# Local backups - keep out of Git
+*.backup
+*.backup-*
+*.before-*
+*.pre-release-backup
+backups/
+
+# Named local safety backups
+*.security-lab-backup
