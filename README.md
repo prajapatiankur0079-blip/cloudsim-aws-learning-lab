@@ -40,7 +40,7 @@ An interactive cloud infrastructure learning simulator built with Python, Flask,
 
 ### 3. Install dependencies
 
-    pip install Flask
+    pip install Flask pytest
 
 ### 4. Run the application
 
@@ -65,10 +65,26 @@ Open http://127.0.0.1:5000 in your browser if Flask reports that address.
 - Never commit passwords, access tokens, private keys, or sensitive credentials.
 - Keep local databases and environment-specific files out of the public repository.
 
+## Automated Tests
+
+The project includes pytest tests for page loading and core EC2/S3 operations.
+
+Run the tests from the project directory with the virtual environment activated:
+
+    python -m pytest -v tests/test_routes.py
+
+The tests use a temporary SQLite database so test operations remain isolated from the local project database.
+
+Current coverage includes:
+- Main learning and service pages load successfully.
+- EC2 instance creation, stopping, starting, and termination.
+- S3 bucket creation and duplicate/invalid bucket validation.
+- S3 object metadata creation.
+
 ## Future Improvements
 
 - Add screenshots and a demo.
-- Add automated tests.
+- Expand automated coverage for VPC, Security Groups, and Route 53 operations.
 - Improve validation and error handling.
 - Explore deployment options.
 

@@ -18,3 +18,4 @@ backups/
 
 # Named local safety backups
 *.security-lab-backup
+*.pre-*

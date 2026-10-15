@@ -34,7 +34,8 @@ def init_db():
             instance_type TEXT NOT NULL DEFAULT 't3.micro',
             image TEXT NOT NULL DEFAULT 'Ubuntu Server 24.04',
             state TEXT NOT NULL DEFAULT 'running',
-            region TEXT NOT NULL DEFAULT 'ap-south-1'
+            region TEXT NOT NULL DEFAULT 'ap-south-1',
+            created_at TEXT
         )
     """)
 
