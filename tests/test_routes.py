@@ -873,3 +873,108 @@ def test_igw_attach_detach_and_public_subnet_routing(client):
     )
     assert blocked.status_code == 200
     assert b"SIMULATED BLOCK" in blocked.data
+
+
+def test_nat_route_rejects_public_subnet(client):
+    import vpc_lab
+
+    client.post(
+        "/practice/vpc/create",
+        data={"name": "NAT Route Reject VPC", "cidr": "10.50.0.0/16"},
+        follow_redirects=True,
+    )
+
+    conn = vpc_lab.db()
+    vpc = conn.execute(
+        "SELECT id FROM vpcs WHERE name = ?",
+        ("NAT Route Reject VPC",),
+    ).fetchone()
+    conn.close()
+    assert vpc is not None
+
+    vpc_id = vpc["id"]
+
+    client.post(
+        "/practice/vpc/subnet/create",
+        data={
+            "vpc_id": str(vpc_id),
+            "name": "Public Subnet",
+            "cidr": "10.50.1.0/24",
+            "subnet_type": "public",
+        },
+        follow_redirects=True,
+    )
+
+    conn = vpc_lab.db()
+    subnet = conn.execute(
+        "SELECT id FROM vpc_subnets WHERE vpc_id = ? AND name = ?",
+        (vpc_id, "Public Subnet"),
+    ).fetchone()
+    conn.close()
+    assert subnet is not None
+
+    response = client.post(
+        "/practice/vpc/nat/route",
+        data={"subnet_id": str(subnet["id"])},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    conn = vpc_lab.db()
+    route = conn.execute(
+        "SELECT target FROM vpc_routes "
+        "WHERE subnet_id = ? AND destination = '0.0.0.0/0'",
+        (subnet["id"],),
+    ).fetchone()
+    conn.close()
+
+    assert route is None or route["target"] != "nat"
+
+
+def test_connectivity_rejects_invalid_destination_ip(client):
+    import vpc_lab
+
+    client.post(
+        "/practice/vpc/create",
+        data={"name": "Invalid IP Test VPC", "cidr": "10.60.0.0/16"},
+        follow_redirects=True,
+    )
+
+    conn = vpc_lab.db()
+    vpc = conn.execute(
+        "SELECT id FROM vpcs WHERE name = ?",
+        ("Invalid IP Test VPC",),
+    ).fetchone()
+    conn.close()
+    assert vpc is not None
+
+    client.post(
+        "/practice/vpc/subnet/create",
+        data={
+            "vpc_id": str(vpc["id"]),
+            "name": "IP Test Subnet",
+            "cidr": "10.60.1.0/24",
+            "subnet_type": "public",
+        },
+        follow_redirects=True,
+    )
+
+    conn = vpc_lab.db()
+    subnet = conn.execute(
+        "SELECT id FROM vpc_subnets WHERE vpc_id = ? AND name = ?",
+        (vpc["id"], "IP Test Subnet"),
+    ).fetchone()
+    conn.close()
+    assert subnet is not None
+
+    response = client.post(
+        "/practice/vpc/connectivity-test",
+        data={
+            "subnet_id": str(subnet["id"]),
+            "destination": "not-an-ip",
+        },
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"SIMULATED PASS" not in response.data
