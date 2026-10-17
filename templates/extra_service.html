@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} | CloudSim</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:1100px;margin:30px auto;padding:0 16px;background:#f5f7fb;color:#172033}
+a{color:#2459a9}.panel{background:white;padding:20px;margin:16px 0;border-radius:12px;border:1px solid #dfe5ef}
+input,textarea{box-sizing:border-box;width:100%;padding:10px;margin:6px 0 12px;border:1px solid #ccd4e0;border-radius:6px}
+button{padding:9px 13px;border:0;border-radius:6px;background:#2459a9;color:white;cursor:pointer;margin:3px}
+.delete{background:#a83232}.muted{color:#566277}.notice{background:#fff4d6;padding:12px;border-radius:8px}
+.resource{border-top:1px solid #e2e6ee;padding:14px 0}.pill{display:inline-block;background:#e7eefb;padding:4px 8px;border-radius:8px}
+.flash{padding:10px;background:#e3f7e8;margin:8px 0;border-radius:6px}
+</style>
+</head>
+<body>
+<p><a href="/">← Back to CloudSim</a> · <a href="/learning">Learning Center</a></p>
+<h1>{{ title }}</h1>
+<p class="muted">{{ description }}</p>
+<div class="notice"><strong>Local simulation only:</strong> This lab stores practice data in SQLite. It does not connect to AWS or create billable resources.</div>
+
+{% with messages = get_flashed_messages() %}
+{% for message in messages %}<div class="flash">{{ message }}</div>{% endfor %}
+{% endwith %}
+
+<section class="panel">
+<h2>Create resource</h2>
+<form method="post">
+<input type="hidden" name="operation" value="create">
+<label>Resource name</label>
+<input name="name" maxlength="100" placeholder="e.g. demo-resource" required>
+<label>Details / message / configuration</label>
+<textarea name="details" rows="3" maxlength="2000" placeholder="Add a message, configuration or learning notes"></textarea>
+<button type="submit">Create in simulator</button>
+</form>
+</section>
+
+<section class="panel">
+<h2>Resources ({{ resources|length }})</h2>
+{% if resources %}
+{% for resource in resources %}
+<div class="resource">
+<h3>{{ resource.name }}</h3>
+<p><span class="pill">{{ resource.state }}</span> <span class="muted">· Created {{ resource.created_at }}</span></p>
+{% if resource.details %}<p style="white-space:pre-wrap">{{ resource.details }}</p>{% endif %}
+<form method="post" style="display:inline">
+<input type="hidden" name="operation" value="action">
+<input type="hidden" name="resource_id" value="{{ resource.id }}">
+<button type="submit">{{ action_label }}</button>
+</form>
+<form method="post" style="display:inline" onsubmit="return confirm('Delete this simulated resource?')">
+<input type="hidden" name="operation" value="delete">
+<input type="hidden" name="resource_id" value="{{ resource.id }}">
+<button class="delete" type="submit">Delete</button>
+</form>
+</div>
+{% endfor %}
+{% else %}
+<p class="muted">No resources yet. Create one above to start practising.</p>
+{% endif %}
+</section>
+
+<section class="panel">
+<h2>{% if service == 'cloudtrail' %}Recent simulator audit events{% else %}Recent activity{% endif %}</h2>
+{% if events %}
+{% for event in events %}
+<div class="resource"><strong>{{ event.event }}</strong> — {{ event.resource_name }} <span class="muted">({{ event.created_at }})</span></div>
+{% endfor %}
+{% else %}
+<p class="muted">No activity recorded yet.</p>
+{% endif %}
+</section>
+</body>
+</html>

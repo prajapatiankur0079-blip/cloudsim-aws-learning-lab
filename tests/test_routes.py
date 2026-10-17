@@ -19,12 +19,16 @@ def client(tmp_path, monkeypatch):
     import vpc_lab
     import security_group_lab
     import route53_lab
+    import iam_lab
+    import extra_services_lab
 
     # Sabhi modules ko ek hi temporary database par set karo.
     monkeypatch.setattr(cloudsim_app, "DB", db_path)
     monkeypatch.setattr(vpc_lab, "DB", db_path)
     monkeypatch.setattr(security_group_lab, "DB", db_path)
     monkeypatch.setattr(route53_lab, "DB", db_path)
+    monkeypatch.setattr(iam_lab, "DB", db_path)
+    monkeypatch.setattr(extra_services_lab, "DB", db_path)
 
     # Temporary database mein tables initialize karo.
     cloudsim_app.init_db()
@@ -32,6 +36,8 @@ def client(tmp_path, monkeypatch):
     vpc_lab.init_nat_db()
     security_group_lab.init_security_group_db()
     route53_lab.init_route53_db()
+    iam_lab.init_iam_db()
+    extra_services_lab.init_extra_services_db()
 
     cloudsim_app.app.config.update(TESTING=True)
 

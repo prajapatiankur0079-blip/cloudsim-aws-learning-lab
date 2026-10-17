@@ -7,12 +7,16 @@ from datetime import datetime
 from vpc_lab import vpc_bp, init_vpc_db, init_nat_db
 from security_group_lab import security_bp, init_security_group_db
 from route53_lab import route53_bp, init_route53_db
+from iam_lab import iam_bp, init_iam_db
+from extra_services_lab import extra_services_bp, init_extra_services_db
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("CLOUDSIM_SECRET_KEY") or secrets.token_hex(32)
 app.register_blueprint(vpc_bp)
 app.register_blueprint(security_bp)
 app.register_blueprint(route53_bp)
+app.register_blueprint(iam_bp)
+app.register_blueprint(extra_services_bp)
 DB = "cloudlab.db"
 
 
@@ -460,6 +464,8 @@ init_vpc_db()
 init_nat_db()
 init_security_group_db()
 init_route53_db()
+init_iam_db()
+init_extra_services_db()
 if __name__ == "__main__":
     print("CloudLab is starting...")
     app.run(host="127.0.0.1", port=5000, debug=True)

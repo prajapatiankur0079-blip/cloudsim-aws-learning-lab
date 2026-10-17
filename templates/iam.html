@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CloudSim | IAM Lab</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: #0b1120; color: #e5e7eb;
+      font-family: Arial, sans-serif; line-height: 1.5;
+    }
+    header {
+      padding: 24px; background: #111c31;
+      border-bottom: 1px solid #293750;
+    }
+    header a { color: #93c5fd; text-decoration: none; }
+    main { max-width: 1150px; margin: auto; padding: 24px; }
+    h1 { margin: 8px 0; }
+    h2 { font-size: 20px; margin-top: 0; }
+    .muted { color: #9ca3af; }
+    .notice {
+      background: #172554; border: 1px solid #1d4ed8;
+      border-radius: 10px; padding: 12px; margin: 16px 0;
+    }
+    .flash { padding: 10px 12px; border-radius: 8px; margin: 8px 0; }
+    .success { background: #123524; }
+    .error { background: #4c1d1d; }
+    .grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px; margin: 18px 0;
+    }
+    .panel {
+      background: #111c31; border: 1px solid #293750;
+      border-radius: 12px; padding: 18px; min-width: 0;
+    }
+    input, select {
+      width: 100%; padding: 10px; margin: 5px 0 12px;
+      border: 1px solid #374151; border-radius: 7px;
+      background: #0b1120; color: #e5e7eb;
+    }
+    label { display: block; font-size: 14px; color: #cbd5e1; }
+    button, .button {
+      display: inline-block; padding: 9px 12px; border: 0;
+      border-radius: 7px; background: #2563eb; color: white;
+      cursor: pointer; text-decoration: none; font-size: 14px;
+    }
+    button.danger { background: #991b1b; }
+    button.secondary { background: #374151; }
+    form { margin: 8px 0; }
+    .item {
+      border-top: 1px solid #293750; padding: 10px 0;
+      overflow-wrap: anywhere;
+    }
+    .item form { display: inline-block; }
+    .tag {
+      display: inline-block; padding: 3px 7px; border-radius: 5px;
+      background: #24334d; font-size: 12px;
+    }
+    .decision {
+      border: 1px solid #475569; padding: 14px;
+      border-radius: 9px; margin-top: 14px;
+    }
+    .allow { color: #86efac; }
+    .deny { color: #fca5a5; }
+    .small { font-size: 13px; }
+    @media (max-width: 600px) {
+      main { padding: 14px; }
+      header { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <a href="{{ url_for('index') }}">← Back to CloudSim</a>
+  <h1>🔐 AWS IAM Lab</h1>
+  <div class="muted">Learn identity, permissions and least-privilege access.</div>
+</header>
+
+<main>
+  <div class="notice">
+    <strong>Local simulator only:</strong>
+    Changes here affect this project's local SQLite database, not your real AWS account.
+    The permission simulator demonstrates a simplified policy model, not the complete AWS IAM evaluation engine.
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <section class="grid">
+    <div class="panel">
+      <h2>1. Users</h2>
+      <p class="muted small">Create identities that can receive policies directly or through groups.</p>
+      <form method="post" action="{{ url_for('iam.create_user') }}">
+        <label for="user-name">User name</label>
+        <input id="user-name" name="name" maxlength="80" required placeholder="e.g. ankur-dev">
+        <button type="submit">Create user</button>
+      </form>
+      {% for user in users %}
+        <div class="item">
+          <strong>{{ user.name }}</strong>
+          <div class="muted small">{{ user.created_at }}</div>
+          <form method="post" action="{{ url_for('iam.delete_user', user_id=user.id) }}"
+                onsubmit="return confirm('Delete this user?')">
+            <button class="danger" type="submit">Delete</button>
+          </form>
+        </div>
+      {% else %}
+        <p class="muted">No users created yet.</p>
+      {% endfor %}
+    </div>
+
+    <div class="panel">
+      <h2>2. Groups</h2>
+      <p class="muted small">Groups make it easier to manage shared permissions.</p>
+      <form method="post" action="{{ url_for('iam.create_group') }}">
+        <label for="group-name">Group name</label>
+        <input id="group-name" name="name" maxlength="80" required placeholder="e.g. Developers">
+        <button type="submit">Create group</button>
+      </form>
+      {% for group in groups %}
+        <div class="item">
+          <strong>{{ group.name }}</strong>
+          <div class="muted small">{{ group.created_at }}</div>
+          <form method="post" action="{{ url_for('iam.delete_group', group_id=group.id) }}"
+                onsubmit="return confirm('Delete this group?')">
+            <button class="danger" type="submit">Delete</button>
+          </form>
+        </div>
+      {% else %}
+        <p class="muted">No groups created yet.</p>
+      {% endfor %}
+    </div>
+
+    <div class="panel">
+      <h2>3. Add user to group</h2>
+      {% if users and groups %}
+        <form method="post" action="{{ url_for('iam.add_membership') }}">
+          <label for="member-user">User</label>
+          <select id="member-user" name="user_id" required>
+            {% for user in users %}
+              <option value="{{ user.id }}">{{ user.name }}</option>
+            {% endfor %}
+          </select>
+          <label for="member-group">Group</label>
+          <select id="member-group" name="group_id" required>
+            {% for group in groups %}
+              <option value="{{ group.id }}">{{ group.name }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">Add membership</button>
+        </form>
+      {% else %}
+        <p class="muted">Create at least one user and one group first.</p>
+      {% endif %}
+      {% for membership in memberships %}
+        <div class="item">
+          {{ membership.user_name }} → {{ membership.group_name }}
+          <form method="post" action="{{ url_for('iam.delete_membership') }}">
+            <input type="hidden" name="user_id" value="{{ membership.user_id }}">
+            <input type="hidden" name="group_id" value="{{ membership.group_id }}">
+            <button class="secondary" type="submit">Remove</button>
+          </form>
+        </div>
+      {% else %}
+        <p class="muted">No memberships yet.</p>
+      {% endfor %}
+    </div>
+
+    <div class="panel">
+      <h2>4. Roles</h2>
+      <p class="muted small">Roles represent identities that can be assumed by trusted entities in real AWS.</p>
+      <form method="post" action="{{ url_for('iam.create_role') }}">
+        <label for="role-name">Role name</label>
+        <input id="role-name" name="name" maxlength="80" required placeholder="e.g. AppReadRole">
+        <label for="role-description">Description</label>
+        <input id="role-description" name="description" maxlength="200" placeholder="Read-only app access">
+        <button type="submit">Create role</button>
+      </form>
+      {% for role in roles %}
+        <div class="item">
+          <strong>{{ role.name }}</strong>
+          <div class="muted small">{{ role.description or 'No description' }}</div>
+          <form method="post" action="{{ url_for('iam.delete_role', role_id=role.id) }}"
+                onsubmit="return confirm('Delete this role?')">
+            <button class="danger" type="submit">Delete</button>
+          </form>
+        </div>
+      {% else %}
+        <p class="muted">No roles created yet.</p>
+      {% endfor %}
+    </div>
+
+    <div class="panel">
+      <h2>5. Policies</h2>
+      <p class="muted small">Use actions such as <code>s3:GetObject</code> and resources such as <code>bucket-a/*</code>.</p>
+      <form method="post" action="{{ url_for('iam.create_policy') }}">
+        <label for="policy-name">Policy name</label>
+        <input id="policy-name" name="name" maxlength="100" required placeholder="e.g. ReadReports">
+        <label for="policy-effect">Effect</label>
+        <select id="policy-effect" name="effect" required>
+          <option value="Allow">Allow</option>
+          <option value="Deny">Deny</option>
+        </select>
+        <label for="policy-action">Action pattern</label>
+        <input id="policy-action" name="action" maxlength="150" required placeholder="s3:GetObject">
+        <label for="policy-resource">Resource pattern</label>
+        <input id="policy-resource" name="resource" maxlength="200" required placeholder="reports/*">
+        <button type="submit">Create policy</button>
+      </form>
+      {% for policy in policies %}
+        <div class="item">
+          <strong>{{ policy.name }}</strong>
+          <div><span class="tag">{{ policy.effect }}</span></div>
+          <div class="small">Action: <code>{{ policy.action }}</code></div>
+          <div class="small">Resource: <code>{{ policy.resource }}</code></div>
+          <form method="post" action="{{ url_for('iam.delete_policy', policy_id=policy.id) }}"
+                onsubmit="return confirm('Delete this policy and its attachments?')">
+            <button class="danger" type="submit">Delete</button>
+          </form>
+        </div>
+      {% else %}
+        <p class="muted">No policies created yet.</p>
+      {% endfor %}
+    </div>
+
+    <div class="panel">
+      <h2>6. Attach policy</h2>
+      {% if policies and (users or groups or roles) %}
+        <form method="post" action="{{ url_for('iam.attach_policy') }}">
+          <label for="attach-policy">Policy</label>
+          <select id="attach-policy" name="policy_id" required>
+            {% for policy in policies %}
+              <option value="{{ policy.id }}">{{ policy.name }} ({{ policy.effect }})</option>
+            {% endfor %}
+          </select>
+          <label for="principal-type">Attach to</label>
+          <select id="principal-type" name="principal_type" required>
+            {% if users %}<option value="user">User</option>{% endif %}
+            {% if groups %}<option value="group">Group</option>{% endif %}
+            {% if roles %}<option value="role">Role</option>{% endif %}
+          </select>
+          <label for="principal-id">Identity</label>
+          <select id="principal-id" name="principal_id" required>
+            {% for user in users %}
+              <option data-kind="user" value="{{ user.id }}">User: {{ user.name }}</option>
+            {% endfor %}
+            {% for group in groups %}
+              <option data-kind="group" value="{{ group.id }}">Group: {{ group.name }}</option>
+            {% endfor %}
+            {% for role in roles %}
+              <option data-kind="role" value="{{ role.id }}">Role: {{ role.name }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">Attach policy</button>
+        </form>
+      {% else %}
+        <p class="muted">Create a policy and at least one identity first.</p>
+      {% endif %}
+      {% for attachment in attachments %}
+        <div class="item">
+          <strong>{{ attachment.policy_name }}</strong>
+          <div class="small">{{ attachment.principal_type }}: {{ attachment.principal_name or 'Unknown identity' }}</div>
+          <form method="post" action="{{ url_for('iam.detach_policy', attachment_id=attachment.id) }}">
+            <button class="secondary" type="submit">Detach</button>
+          </form>
+        </div>
+      {% else %}
+        <p class="muted">No policies attached yet.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>7. Permission simulator</h2>
+    <p class="muted small">
+      Tests attached policies for a user or role. This is a learning model:
+      it does not implement every AWS policy type, condition, trust policy or resource policy.
+    </p>
+    <form method="post" action="{{ url_for('iam.simulate') }}">
+      <label for="sim-principal-type">Identity type</label>
+      <select id="sim-principal-type" name="principal_type" required>
+        <option value="user">User</option>
+        <option value="role">Role</option>
+      </select>
+      <label for="sim-principal-id">Identity</label>
+      <select id="sim-principal-id" name="principal_id" required>
+        {% for user in users %}
+          <option data-kind="user" value="{{ user.id }}">User: {{ user.name }}</option>
+        {% endfor %}
+        {% for role in roles %}
+          <option data-kind="role" value="{{ role.id }}">Role: {{ role.name }}</option>
+        {% endfor %}
+      </select>
+      <label for="sim-action">Requested action</label>
+      <input id="sim-action" name="action" required placeholder="s3:GetObject">
+      <label for="sim-resource">Requested resource</label>
+      <input id="sim-resource" name="resource" required placeholder="reports/file.pdf">
+      <button type="submit">Simulate access</button>
+    </form>
+
+    {% if result %}
+      <div class="decision">
+        <h3 class="{{ 'allow' if result.decision == 'ALLOW' else 'deny' }}">
+          Decision: {{ result.decision }}
+        </h3>
+        <p><strong>Identity:</strong> {{ result.principal }}</p>
+        <p><strong>Action:</strong> {{ result.action }}</p>
+        <p><strong>Resource:</strong> {{ result.resource }}</p>
+        <p>{{ result.reason }}</p>
+        {% if result.policies %}
+          <strong>Matching policies</strong>
+          {% for policy in result.policies %}
+            <div class="item">
+              {{ policy.name }} — {{ policy.effect }}
+              <div class="muted small">{{ policy.action }} on {{ policy.resource }}</div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% endif %}
+  </section>
+</main>
+
+<script>
+  function filterOptions(typeSelect, identitySelect) {
+    const kind = typeSelect.value;
+    let firstVisible = null;
+    for (const option of identitySelect.options) {
+      option.hidden = option.dataset.kind !== kind;
+      if (!option.hidden && firstVisible === null) firstVisible = option;
+    }
+    if (firstVisible) {
+      if (identitySelect.selectedOptions.length === 0 ||
+          identitySelect.selectedOptions[0].hidden) {
+        firstVisible.selected = true;
+      }
+      identitySelect.disabled = false;
+    } else {
+      identitySelect.selectedIndex = -1;
+      identitySelect.disabled = true;
+    }
+  }
+
+  const principalType = document.getElementById("principal-type");
+  const principalId = document.getElementById("principal-id");
+  if (principalType && principalId) {
+    principalType.addEventListener("change", () => filterOptions(principalType, principalId));
+    filterOptions(principalType, principalId);
+  }
+
+  const simType = document.getElementById("sim-principal-type");
+  const simId = document.getElementById("sim-principal-id");
+  if (simType && simId) {
+    simType.addEventListener("change", () => filterOptions(simType, simId));
+    filterOptions(simType, simId);
+  }
+</script>
+</body>
+</html>
