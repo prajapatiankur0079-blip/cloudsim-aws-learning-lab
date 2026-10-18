@@ -26,6 +26,83 @@ button{background:#2563eb;color:white;border:0;border-radius:7px;padding:10px 14
 .answer{display:none;color:#a7f3d0;line-height:1.8;padding:10px 0;font-size:14px}
 code{color:#86efac;background:#0b1525;padding:3px 5px;border-radius:4px}
 footer{text-align:center;color:#8799b2;font-size:12px;padding:20px}
+
+/* EC2 visual gallery: orange service accent with readable dark panels */
+h2 {
+  color: #fb923c;
+}
+.visual-gallery {
+  margin: 42px 0 34px;
+}
+.gallery-heading {
+  margin-bottom: 22px;
+  padding: 22px;
+  border: 1px solid #49321f;
+  border-radius: 18px;
+  background: linear-gradient(120deg, #21180f, #111c2e 72%);
+}
+.gallery-kicker {
+  color: #fb923c;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+.gallery-heading h2 {
+  margin: 9px 0;
+  color: #fdba74;
+}
+.gallery-heading p,
+.visual-card p {
+  color: #b9c6d9;
+  line-height: 1.7;
+}
+.visual-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.visual-card {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid #29384d;
+  border-radius: 16px;
+  background: #101a2a;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .16);
+}
+.visual-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #0b1220;
+}
+.visual-card figcaption {
+  padding: 17px 18px 20px;
+}
+.visual-card h3 {
+  margin: 0 0 8px;
+  color: #fdba74;
+  font-size: 17px;
+}
+.visual-card p {
+  margin: 0;
+  font-size: 14px;
+}
+.gallery-note {
+  margin-top: 18px;
+  padding: 15px 18px;
+  border-left: 4px solid #fb923c;
+  border-radius: 8px;
+  background: #21180f;
+  color: #e5edf8;
+  line-height: 1.7;
+}
+@media (max-width: 700px) {
+  .visual-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 </style>
 </head>
 <body>
@@ -151,6 +228,78 @@ footer{text-align:center;color:#8799b2;font-size:12px;padding:20px}
 </section>
 
 <section>
+
+<section id="ec2-visual-gallery" class="visual-gallery">
+  <div class="gallery-heading">
+    <span class="gallery-kicker">VISUAL LEARNING</span>
+    <h2>EC2 Visual Learning Gallery</h2>
+    <p>Study how an EC2 instance receives traffic, runs, stores data,
+       stays secure, and scales when demand increases.</p>
+  </div>
+
+  <div class="visual-grid">
+    <figure class="visual-card">
+      <img src="{{ url_for('static', filename='images/lessons/ec2-request-path.svg') }}"
+           alt="Request path from a user through internet gateway, route table and security group to EC2"
+           loading="lazy">
+      <figcaption>
+        <h3>1. Request path and networking</h3>
+        <p>A request must follow a valid network route and pass the relevant
+           security rules before it can reach the application.</p>
+      </figcaption>
+    </figure>
+
+    <figure class="visual-card">
+      <img src="{{ url_for('static', filename='images/lessons/ec2-lifecycle.svg') }}"
+           alt="EC2 instance lifecycle from launch and pending to running, stopped or terminated"
+           loading="lazy">
+      <figcaption>
+        <h3>2. Instance lifecycle</h3>
+        <p>Learn the difference between running, stopping, stopped and
+           terminated. Termination is not the same as stopping.</p>
+      </figcaption>
+    </figure>
+
+    <figure class="visual-card">
+      <img src="{{ url_for('static', filename='images/lessons/ec2-storage.svg') }}"
+           alt="Relationship between AMI, EC2, EBS volumes, EBS snapshots and S3"
+           loading="lazy">
+      <figcaption>
+        <h3>3. Storage: AMI, EBS and S3</h3>
+        <p>An AMI helps launch instances, EBS provides block storage, and S3
+           stores objects. Choose each service for the right purpose.</p>
+      </figcaption>
+    </figure>
+
+    <figure class="visual-card">
+      <img src="{{ url_for('static', filename='images/lessons/ec2-security.svg') }}"
+           alt="EC2 security layers including IAM role, security group, access method and host protection"
+           loading="lazy">
+      <figcaption>
+        <h3>4. Security layers</h3>
+        <p>IAM permissions, network access rules, secure administration and
+           operating-system protection solve different security problems.</p>
+      </figcaption>
+    </figure>
+
+    <figure class="visual-card">
+      <img src="{{ url_for('static', filename='images/lessons/ec2-scaling.svg') }}"
+           alt="EC2 scaling architecture with a load balancer, instances across availability zones and CloudWatch"
+           loading="lazy">
+      <figcaption>
+        <h3>5. Scaling and monitoring</h3>
+        <p>A load balancer distributes requests, Auto Scaling manages capacity,
+           and CloudWatch helps monitor metrics and alarms.</p>
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="gallery-note">
+    <strong>Remember:</strong> These are conceptual learning diagrams.
+    Exact architecture depends on your VPC, routes, permissions and application.
+  </div>
+</section>
+
 <h2>6. Troubleshooting an unreachable EC2 server</h2>
 <ol>
 <li>Confirm the instance state and correct IP address or DNS name.</li>

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+      width="900" height="420" viewBox="0 0 900 420" role="img">
+      <defs><marker id="arrow" markerWidth="8" markerHeight="8"
+      refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#fb923c"/>
+      </marker></defs>
+      <rect width="900" height="420" rx="18" fill="#0b1220"/>
+      <text x="30" y="42" font-size="24" fill="#fb923c" font-weight="700">Amazon EC2 — Amazon EC2 troublesho…</text>
+      <text x="30" y="70" font-size="13" fill="#b9c6d9" font-weight="400">Use a systematic debugging process.</text>
+
+    <rect x="40" y="145" width="185" height="90" rx="13"
+      fill="#111c2e" stroke="#fb923c" stroke-width="2"/>
+    <rect x="40" y="145" width="5" height="90" rx="2" fill="#fb923c"/>
+    <text x="56" y="174" font-size="16" fill="#f8fafc" font-weight="700">1. Observe</text>
+    <text x="56" y="198" font-size="12" fill="#b9c6d9" font-weight="400">Check instance state, security-gro…</text>
+
+    <rect x="265" y="145" width="185" height="90" rx="13"
+      fill="#111c2e" stroke="#fb923c" stroke-width="2"/>
+    <rect x="265" y="145" width="5" height="90" rx="2" fill="#fb923c"/>
+    <text x="281" y="174" font-size="16" fill="#f8fafc" font-weight="700">2. Verify</text>
+    <text x="281" y="198" font-size="12" fill="#b9c6d9" font-weight="400">Configuration and inputs</text>
+
+    <rect x="490" y="145" width="185" height="90" rx="13"
+      fill="#111c2e" stroke="#fb923c" stroke-width="2"/>
+    <rect x="490" y="145" width="5" height="90" rx="2" fill="#fb923c"/>
+    <text x="506" y="174" font-size="16" fill="#f8fafc" font-weight="700">3. Inspect</text>
+    <text x="506" y="198" font-size="12" fill="#b9c6d9" font-weight="400">Permissions, metrics and logs</text>
+
+    <rect x="715" y="145" width="150" height="90" rx="13"
+      fill="#111c2e" stroke="#fb923c" stroke-width="2"/>
+    <rect x="715" y="145" width="5" height="90" rx="2" fill="#fb923c"/>
+    <text x="731" y="174" font-size="16" fill="#f8fafc" font-weight="700">4. Resolve</text>
+    <text x="731" y="198" font-size="12" fill="#b9c6d9" font-weight="400">Fix and retest</text>
+    <path d="M225,190 L257,190" fill="none"
+      stroke="#fb923c" stroke-width="2.5"
+      marker-end="url(#arrow)"/><path d="M450,190 L482,190" fill="none"
+      stroke="#fb923c" stroke-width="2.5"
+      marker-end="url(#arrow)"/><path d="M675,190 L707,190" fill="none"
+      stroke="#fb923c" stroke-width="2.5"
+      marker-end="url(#arrow)"/>
+      <text x="30" y="397" font-size="11" fill="#94a3b8" font-weight="400">CLOUDSIM | CONCEPTUAL LEARNING DIA…</text>
+    </svg>

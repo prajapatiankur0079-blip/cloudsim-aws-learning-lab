@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="600"
+ viewBox="0 0 1100 600" role="img">
+ <defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+   <stop offset="0" stop-color="#0b1424"/>
+   <stop offset="1" stop-color="#101f35"/>
+  </linearGradient>
+  <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3"
+   orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#c084fc"/></marker>
+ </defs>
+ <rect width="1100" height="600" rx="22" fill="url(#bg)"/>
+ <rect x="30" y="28" width="7" height="62" rx="3" fill="#c084fc"/>
+ <text x="55" y="54" font-size="24" fill="#f8fafc" font-weight="700" text-anchor="start"><tspan x="55" dy="0">Amazon EBS | Real-World Use Case</tspan></text>
+ <text x="55" y="84" font-size="12" fill="#a9bbd2" font-weight="400" text-anchor="start"><tspan x="55" dy="0">Connect the service to a practical cloud engineering scenario</tspan></text>
+ <line x1="35" y1="112" x2="1065" y2="112" stroke="#293b53"/>
+<rect x="55" y="140" width="990" height="86" rx="13" fill="#111e31" stroke="#c084fc" stroke-width="1.6"/><text x="78" y="169" font-size="12" fill="#c084fc" font-weight="700" text-anchor="start"><tspan x="78" dy="0">REAL-WORLD SCENARIO</tspan></text><text x="78" y="201" font-size="16" fill="#f8fafc" font-weight="700" text-anchor="start"><tspan x="78" dy="0">Keep an EC2 server&#x27;s</tspan><tspan x="78" dy="20">operating-system disk and</tspan><tspan x="78" dy="20">application data.</tspan></text><rect x="65" y="300" width="205" height="100" rx="13" fill="#111e31" stroke="#c084fc" stroke-width="1.7"/>
+<rect x="65" y="300" width="5" height="100" rx="2" fill="#c084fc"/>
+<circle cx="89" cy="325" r="12" fill="#c084fc"/><text x="89" y="330" text-anchor="middle" font-size="12" font-weight="700" fill="#07111f">1</text>
+<text x="110" y="330" font-size="16" fill="#f8fafc" font-weight="700" text-anchor="start"><tspan x="110" dy="0">EC2 Instance</tspan></text>
+<text x="83" y="361" font-size="13" fill="#b8c8dc" font-weight="400" text-anchor="start"><tspan x="83" dy="0">Initiate</tspan></text><path d="M270,350 L315,350" fill="none" stroke="#c084fc" stroke-width="2.5" marker-end="url(#arrow)"/><rect x="325" y="300" width="205" height="100" rx="13" fill="#111e31" stroke="#c084fc" stroke-width="1.7"/>
+<rect x="325" y="300" width="5" height="100" rx="2" fill="#c084fc"/>
+<circle cx="349" cy="325" r="12" fill="#c084fc"/><text x="349" y="330" text-anchor="middle" font-size="12" font-weight="700" fill="#07111f">2</text>
+<text x="370" y="330" font-size="16" fill="#f8fafc" font-weight="700" text-anchor="start"><tspan x="370" dy="0">Block Device</tspan></text>
+<text x="343" y="361" font-size="13" fill="#b8c8dc" font-weight="400" text-anchor="start"><tspan x="343" dy="0">Authorise / route</tspan></text><path d="M530,350 L575,350" fill="none" stroke="#c084fc" stroke-width="2.5" marker-end="url(#arrow)"/><rect x="585" y="300" width="205" height="100" rx="13" fill="#111e31" stroke="#c084fc" stroke-width="1.7"/>
+<rect x="585" y="300" width="5" height="100" rx="2" fill="#c084fc"/>
+<circle cx="609" cy="325" r="12" fill="#c084fc"/><text x="609" y="330" text-anchor="middle" font-size="12" font-weight="700" fill="#07111f">3</text>
+<text x="630" y="330" font-size="16" fill="#f8fafc" font-weight="700" text-anchor="start"><tspan x="630" dy="0">EBS Volume</tspan></text>
+<text x="603" y="361" font-size="13" fill="#b8c8dc" font-weight="400" text-anchor="start"><tspan x="603" dy="0">Process</tspan></text><path d="M790,350 L835,350" fill="none" stroke="#c084fc" stroke-width="2.5" marker-end="url(#arrow)"/><rect x="845" y="300" width="205" height="100" rx="13" fill="#111e31" stroke="#c084fc" stroke-width="1.7"/>
+<rect x="845" y="300" width="5" height="100" rx="2" fill="#c084fc"/>
+<circle cx="869" cy="325" r="12" fill="#c084fc"/><text x="869" y="330" text-anchor="middle" font-size="12" font-weight="700" fill="#07111f">4</text>
+<text x="890" y="330" font-size="16" fill="#f8fafc" font-weight="700" text-anchor="start"><tspan x="890" dy="0">Snapshot Backup</tspan></text>
+<text x="863" y="361" font-size="13" fill="#b8c8dc" font-weight="400" text-anchor="start"><tspan x="863" dy="0">Deliver / observe</tspan></text><text x="72" y="465" font-size="17" fill="#f8fafc" font-weight="700" text-anchor="start"><tspan x="72" dy="0">Production review</tspan></text><text x="72" y="497" font-size="14" fill="#e5edf8" font-weight="400" text-anchor="start"><tspan x="72" dy="0">Check least privilege,</tspan><tspan x="72" dy="18">failure handling,</tspan><tspan x="72" dy="18">monitoring and cost.</tspan></text><line x1="35" y1="548" x2="1065" y2="548" stroke="#293b53"/><text x="38" y="575" font-size="11" fill="#8295ae" font-weight="400" text-anchor="start"><tspan x="38" dy="0">CLOUDSIM / CONCEPTUAL AWS LEARNING DIAGRAM</tspan></text><text x="1060" y="575" font-size="11" fill="#c084fc" font-weight="700" text-anchor="end"><tspan x="1060" dy="0">EBS</tspan></text></svg>

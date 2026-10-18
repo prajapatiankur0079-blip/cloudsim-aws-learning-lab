@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+      width="900" height="420" viewBox="0 0 900 420" role="img">
+      <defs><marker id="arrow" markerWidth="8" markerHeight="8"
+      refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#fb923c"/>
+      </marker></defs>
+      <rect width="900" height="420" rx="18" fill="#0b1220"/>
+      <text x="30" y="42" font-size="24" fill="#fb923c" font-weight="700">Amazon EC2 — Amazon EC2 workflow</text>
+      <text x="30" y="70" font-size="13" fill="#b9c6d9" font-weight="400">Understand the order of operations.</text>
+
+    <rect x="35" y="160" width="180" height="90" rx="13"
+      fill="#111c2e" stroke="#fb923c" stroke-width="2"/>
+    <rect x="35" y="160" width="5" height="90" rx="2" fill="#fb923c"/>
+    <text x="51" y="189" font-size="16" fill="#f8fafc" font-weight="700">Stage 1</text>
+    <text x="51" y="213" font-size="12" fill="#b9c6d9" font-weight="400">Choose an AMI</text>
+
+    <rect x="250" y="160" width="180" height="90" rx="13"
+      fill="#111c2e" stroke="#fb923c" stroke-width="2"/>
+    <rect x="250" y="160" width="5" height="90" rx="2" fill="#fb923c"/>
+    <text x="266" y="189" font-size="16" fill="#f8fafc" font-weight="700">Stage 2</text>
+    <text x="266" y="213" font-size="12" fill="#b9c6d9" font-weight="400">Select an instance type</text>
+    <path d="M215,205 L242,205" fill="none"
+      stroke="#fb923c" stroke-width="2.5"
+      marker-end="url(#arrow)"/>
+    <rect x="465" y="160" width="180" height="90" rx="13"
+      fill="#111c2e" stroke="#fb923c" stroke-width="2"/>
+    <rect x="465" y="160" width="5" height="90" rx="2" fill="#fb923c"/>
+    <text x="481" y="189" font-size="16" fill="#f8fafc" font-weight="700">Stage 3</text>
+    <text x="481" y="213" font-size="12" fill="#b9c6d9" font-weight="400">Configure networking and security</text>
+    <path d="M430,205 L457,205" fill="none"
+      stroke="#fb923c" stroke-width="2.5"
+      marker-end="url(#arrow)"/>
+    <rect x="680" y="160" width="180" height="90" rx="13"
+      fill="#111c2e" stroke="#fb923c" stroke-width="2"/>
+    <rect x="680" y="160" width="5" height="90" rx="2" fill="#fb923c"/>
+    <text x="696" y="189" font-size="16" fill="#f8fafc" font-weight="700">Stage 4</text>
+    <text x="696" y="213" font-size="12" fill="#b9c6d9" font-weight="400">Launch and monitor</text>
+    <path d="M645,205 L672,205" fill="none"
+      stroke="#fb923c" stroke-width="2.5"
+      marker-end="url(#arrow)"/>
+      <text x="30" y="397" font-size="11" fill="#94a3b8" font-weight="400">CLOUDSIM | CONCEPTUAL LEARNING DIA…</text>
+    </svg>

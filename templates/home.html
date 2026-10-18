@@ -103,167 +103,167 @@ footer{border-top:1px solid var(--border);margin-top:40px;padding:25px 0;color:#
       <article class="card" data-category="compute" data-search="ec2 virtual machine server instance compute">
         <div class="card-top"><div class="symbol">🖥️</div><div><h3>Amazon EC2</h3><div class="category">COMPUTE</div></div></div>
         <p class="description">Virtual servers, instance types, AMIs and instance lifecycle management.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="ec2">Learn concepts</button><a class="btn" href="/practice/ec2">Practice →</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/ec2">Learn Deeply →</a><button class="btn secondary learn" data-lesson="ec2">Learn concepts</button><a class="btn" href="/practice/ec2">Practice →</a></div>
         <div class="lesson" data-content="ec2" hidden><strong>What is EC2?</strong><br>EC2 provides virtual servers called instances. An AMI is the server image, an instance type defines compute capacity, and a security group controls network traffic. <br><strong>Practice:</strong> Launch, stop and start simulated instances in the EC2 Lab.</div>
       </article>
 
       <article class="card" data-category="storage" data-search="s3 bucket object storage files versioning">
         <div class="card-top"><div class="symbol">🪣</div><div><h3>Amazon S3</h3><div class="category">STORAGE</div></div></div>
         <p class="description">Object storage, buckets, object metadata, versioning and access concepts.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="s3">Learn concepts</button><a class="btn" href="/practice/s3">Practice →</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/s3">Learn Deeply →</a><button class="btn secondary learn" data-lesson="s3">Learn concepts</button><a class="btn" href="/practice/s3">Practice →</a></div>
         <div class="lesson" data-content="s3" hidden><strong>What is S3?</strong><br>S3 stores objects inside buckets. Object storage is useful for images, backups, logs and static files. Bucket names must be globally unique in real AWS. <br><strong>Practice:</strong> Create simulated buckets and add object metadata. This lab does not upload actual files to AWS.</div>
       </article>
 
       <article class="card" data-category="compute" data-search="lambda serverless function event trigger python">
         <div class="card-top"><div class="symbol">λ</div><div><h3>AWS Lambda</h3><div class="category">SERVERLESS COMPUTE</div></div></div>
         <p class="description">Functions, event-driven computing, execution roles, triggers and logs.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="lambda">Learn concepts</button><a class="btn" href="/practice/lambda">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/lambda">Learn Deeply →</a><button class="btn secondary learn" data-lesson="lambda">Learn concepts</button><a class="btn" href="/practice/lambda">Open Lab</a></div>
         <div class="lesson" data-content="lambda" hidden><strong>What is Lambda?</strong><br>Lambda runs code in response to events without requiring you to manage servers. Events can come from services such as S3, EventBridge or API Gateway. <br><strong>Example:</strong> An image uploaded to a bucket triggers a function. Real AWS execution and permissions are not configured in this learning preview.</div>
       </article>
 
       <article class="card" data-category="network" data-search="vpc subnet route table internet gateway nat security group networking">
         <div class="card-top"><div class="symbol">🌐</div><div><h3>Amazon VPC</h3><div class="category">NETWORKING</div></div></div>
         <p class="description">Virtual networks, subnets, routes, gateways and network security.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="vpc">Learn concepts</button><a class="btn" href="{{ url_for('vpc.dashboard') }}">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/vpc">Learn Deeply →</a><button class="btn secondary learn" data-lesson="vpc">Learn concepts</button><a class="btn" href="{{ url_for('vpc.dashboard') }}">Open Lab</a></div>
         <div class="lesson" data-content="vpc" hidden><strong>What is VPC?</strong><br>A VPC is an isolated virtual network. Subnets divide its IP address range. Route tables decide where traffic goes. Internet and NAT gateways serve different connectivity needs.</div>
       </article>
 
       <article class="card" data-category="security" data-search="security group inbound rules ports cidr firewall network security">
         <div class="card-top"><div class="symbol">🛡️</div><div><h3>Security Group Lab</h3><div class="category">NETWORK SECURITY</div></div></div>
         <p class="description">Create groups, configure inbound allow rules and simulate traffic by source IP, protocol and port.</p>
-        <div class="card-actions"><a class="btn" href="/practice/security-groups/">Open Lab →</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/security-groups">Learn Deeply →</a><a class="btn" href="/practice/security-groups/">Open Lab →</a></div>
       </article>
 
       <article class="card" data-category="security" data-search="iam identity access management users roles policies permissions">
         <div class="card-top"><div class="symbol">🔐</div><div><h3>AWS IAM</h3><div class="category">SECURITY</div></div></div>
         <p class="description">Users, roles, policies, permissions and least-privilege access.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="iam">Learn concepts</button><a class="btn" href="/practice/iam/">Open Lab →</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/iam">Learn Deeply →</a><button class="btn secondary learn" data-lesson="iam">Learn concepts</button><a class="btn" href="/practice/iam/">Open Lab →</a></div>
         <div class="lesson" data-content="iam" hidden><strong>What is IAM?</strong><br>IAM controls who can access AWS resources and which actions they can perform. Policies define permissions. A role provides temporary credentials to a trusted identity or service.</div>
       </article>
 
       <article class="card" data-category="database" data-search="rds relational database mysql postgresql sql">
         <div class="card-top"><div class="symbol">🗃️</div><div><h3>Amazon RDS</h3><div class="category">DATABASE</div></div></div>
         <p class="description">Managed relational databases, SQL, backups and availability.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="rds">Learn concepts</button><a class="btn" href="/practice/rds">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/rds">Learn Deeply →</a><button class="btn secondary learn" data-lesson="rds">Learn concepts</button><a class="btn" href="/practice/rds">Open Lab</a></div>
         <div class="lesson" data-content="rds" hidden><strong>What is RDS?</strong><br>RDS helps operate relational database engines such as MySQL and PostgreSQL. Learn tables, SQL queries, backups, maintenance and multi-AZ availability.</div>
       </article>
 
       <article class="card" data-category="database" data-search="dynamodb nosql key value items tables">
         <div class="card-top"><div class="symbol">⚡</div><div><h3>Amazon DynamoDB</h3><div class="category">DATABASE</div></div></div>
         <p class="description">Managed NoSQL tables, keys, items and access patterns.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="dynamo">Learn concepts</button><a class="btn" href="/practice/dynamo">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/dynamo">Learn Deeply →</a><button class="btn secondary learn" data-lesson="dynamo">Learn concepts</button><a class="btn" href="/practice/dynamo">Open Lab</a></div>
         <div class="lesson" data-content="dynamo" hidden><strong>What is DynamoDB?</strong><br>DynamoDB is a managed NoSQL database. Tables contain items, and items contain attributes. Partition keys are important for distributing and retrieving data.</div>
       </article>
 
       <article class="card" data-category="storage" data-search="ebs elastic block storage disk volume snapshots">
         <div class="card-top"><div class="symbol">💽</div><div><h3>Amazon EBS</h3><div class="category">STORAGE</div></div></div>
         <p class="description">Block storage volumes, snapshots and persistent instance disks.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="ebs">Learn concepts</button><a class="btn" href="/practice/ebs">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/ebs">Learn Deeply →</a><button class="btn secondary learn" data-lesson="ebs">Learn concepts</button><a class="btn" href="/practice/ebs">Open Lab</a></div>
         <div class="lesson" data-content="ebs" hidden><strong>What is EBS?</strong><br>EBS provides block storage volumes commonly attached to EC2 instances. Snapshots help preserve volume data for recovery.</div>
       </article>
 
       <article class="card" data-category="network" data-search="route 53 dns domain records routing">
         <div class="card-top"><div class="symbol">🧭</div><div><h3>Amazon Route 53</h3><div class="category">NETWORKING</div></div></div>
         <p class="description">DNS concepts, hosted zones, records and routing policies.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="route53">Learn concepts</button><a class="btn" href="{{ url_for('route53.dashboard') }}">Open Lab →</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/route53">Learn Deeply →</a><button class="btn secondary learn" data-lesson="route53">Learn concepts</button><a class="btn" href="{{ url_for('route53.dashboard') }}">Open Lab →</a></div>
         <div class="lesson" data-content="route53" hidden><strong>What is Route 53?</strong><br>Route 53 is a DNS and domain-routing service. DNS records such as A, AAAA, CNAME and MX map names to destinations or services.</div>
       </article>
 
       <article class="card" data-category="network" data-search="cloudfront cdn cache edge locations">
         <div class="card-top"><div class="symbol">🌍</div><div><h3>Amazon CloudFront</h3><div class="category">NETWORKING</div></div></div>
         <p class="description">Content delivery, edge locations, caching and origin servers.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="cloudfront">Learn concepts</button><a class="btn" href="/practice/cloudfront">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/cloudfront">Learn Deeply →</a><button class="btn secondary learn" data-lesson="cloudfront">Learn concepts</button><a class="btn" href="/practice/cloudfront">Open Lab</a></div>
         <div class="lesson" data-content="cloudfront" hidden><strong>What is CloudFront?</strong><br>CloudFront is a content delivery network that caches content closer to users, helping reduce latency and origin load.</div>
       </article>
 
       <article class="card" data-category="network" data-search="api gateway rest http endpoints lambda">
         <div class="card-top"><div class="symbol">🔗</div><div><h3>Amazon API Gateway</h3><div class="category">NETWORKING</div></div></div>
         <p class="description">HTTP APIs, routes, requests and integration with Lambda.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="api">Learn concepts</button><a class="btn" href="/practice/api">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/api">Learn Deeply →</a><button class="btn secondary learn" data-lesson="api">Learn concepts</button><a class="btn" href="/practice/api">Open Lab</a></div>
         <div class="lesson" data-content="api" hidden><strong>What is API Gateway?</strong><br>API Gateway exposes application functionality through APIs. A route such as GET /users can connect a client request to backend code.</div>
       </article>
 
       <article class="card" data-category="monitor" data-search="cloudwatch metrics logs alarms monitoring">
         <div class="card-top"><div class="symbol">📊</div><div><h3>Amazon CloudWatch</h3><div class="category">MONITORING</div></div></div>
         <p class="description">Metrics, logs, dashboards, alarms and operational visibility.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="cloudwatch">Learn concepts</button><a class="btn" href="/practice/cloudwatch">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/cloudwatch">Learn Deeply →</a><button class="btn secondary learn" data-lesson="cloudwatch">Learn concepts</button><a class="btn" href="/practice/cloudwatch">Open Lab</a></div>
         <div class="lesson" data-content="cloudwatch" hidden><strong>What is CloudWatch?</strong><br>CloudWatch collects monitoring data. Metrics track measurements, logs record events, and alarms can react when configured thresholds are crossed.</div>
       </article>
 
       <article class="card" data-category="monitor" data-search="cloudtrail audit api activity security events">
         <div class="card-top"><div class="symbol">📜</div><div><h3>AWS CloudTrail</h3><div class="category">MONITORING</div></div></div>
         <p class="description">Audit AWS API activity and investigate account actions.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="cloudtrail">Learn concepts</button><a class="btn" href="/practice/cloudtrail">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/cloudtrail">Learn Deeply →</a><button class="btn secondary learn" data-lesson="cloudtrail">Learn concepts</button><a class="btn" href="/practice/cloudtrail">Open Lab</a></div>
         <div class="lesson" data-content="cloudtrail" hidden><strong>What is CloudTrail?</strong><br>CloudTrail records supported AWS account activity, helping teams understand who performed an action, what happened and when.</div>
       </article>
 
       <article class="card" data-category="devops" data-search="cloudformation infrastructure as code templates stacks">
         <div class="card-top"><div class="symbol">🏗️</div><div><h3>AWS CloudFormation</h3><div class="category">DEVOPS</div></div></div>
         <p class="description">Infrastructure as code, templates, stacks and repeatable deployments.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="cfn">Learn concepts</button><a class="btn" href="/practice/cfn">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/cfn">Learn Deeply →</a><button class="btn secondary learn" data-lesson="cfn">Learn concepts</button><a class="btn" href="/practice/cfn">Open Lab</a></div>
         <div class="lesson" data-content="cfn" hidden><strong>What is CloudFormation?</strong><br>CloudFormation describes supported AWS resources in templates so infrastructure can be created and updated consistently.</div>
       </article>
 
       <article class="card" data-category="devops" data-search="sqs queue messages asynchronous">
         <div class="card-top"><div class="symbol">📥</div><div><h3>Amazon SQS</h3><div class="category">MESSAGING</div></div></div>
         <p class="description">Message queues, decoupled services and asynchronous processing.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="sqs">Learn concepts</button><a class="btn" href="/practice/sqs">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/sqs">Learn Deeply →</a><button class="btn secondary learn" data-lesson="sqs">Learn concepts</button><a class="btn" href="/practice/sqs">Open Lab</a></div>
         <div class="lesson" data-content="sqs" hidden><strong>What is SQS?</strong><br>SQS lets one component send messages for another component to process later, reducing tight dependencies between services.</div>
       </article>
 
       <article class="card" data-category="devops" data-search="sns notifications topics subscribers publish">
         <div class="card-top"><div class="symbol">🔔</div><div><h3>Amazon SNS</h3><div class="category">MESSAGING</div></div></div>
         <p class="description">Topics, publishers, subscribers and notification fan-out.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="sns">Learn concepts</button><a class="btn" href="/practice/sns">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/sns">Learn Deeply →</a><button class="btn secondary learn" data-lesson="sns">Learn concepts</button><a class="btn" href="/practice/sns">Open Lab</a></div>
         <div class="lesson" data-content="sns" hidden><strong>What is SNS?</strong><br>SNS distributes published messages to subscribed endpoints. It is useful for notifications and event fan-out patterns.</div>
       </article>
 
       <article class="card" data-category="compute" data-search="ecs containers docker orchestration">
         <div class="card-top"><div class="symbol">📦</div><div><h3>Amazon ECS</h3><div class="category">CONTAINERS</div></div></div>
         <p class="description">Container orchestration, tasks, services and deployments.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="ecs">Learn concepts</button><a class="btn" href="/practice/ecs">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/ecs">Learn Deeply →</a><button class="btn secondary learn" data-lesson="ecs">Learn concepts</button><a class="btn" href="/practice/ecs">Open Lab</a></div>
         <div class="lesson" data-content="ecs" hidden><strong>What is ECS?</strong><br>ECS orchestrates container workloads. A task definition describes containers, tasks run them, and services help maintain desired task counts.</div>
       </article>
 
       <article class="card" data-category="compute" data-search="eks kubernetes clusters nodes pods containers">
         <div class="card-top"><div class="symbol">☸️</div><div><h3>Amazon EKS</h3><div class="category">CONTAINERS</div></div></div>
         <p class="description">Managed Kubernetes clusters, nodes, pods and workloads.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="eks">Learn concepts</button><a class="btn" href="/practice/eks">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/eks">Learn Deeply →</a><button class="btn secondary learn" data-lesson="eks">Learn concepts</button><a class="btn" href="/practice/eks">Open Lab</a></div>
         <div class="lesson" data-content="eks" hidden><strong>What is EKS?</strong><br>EKS provides a managed Kubernetes control plane. Kubernetes schedules containerized workloads in pods and manages desired state.</div>
       </article>
 
       <article class="card" data-category="devops" data-search="eventbridge events schedules rules serverless">
         <div class="card-top"><div class="symbol">🪄</div><div><h3>Amazon EventBridge</h3><div class="category">EVENTS</div></div></div>
         <p class="description">Event buses, matching rules, targets and event-driven systems.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="events">Learn concepts</button><a class="btn" href="/practice/events">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/events">Learn Deeply →</a><button class="btn secondary learn" data-lesson="events">Learn concepts</button><a class="btn" href="/practice/events">Open Lab</a></div>
         <div class="lesson" data-content="events" hidden><strong>What is EventBridge?</strong><br>EventBridge routes events that match configured rules to targets, enabling loosely coupled event-driven architectures.</div>
       </article>
 
       <article class="card" data-category="security" data-search="kms encryption keys cryptography">
         <div class="card-top"><div class="symbol">🔑</div><div><h3>AWS KMS</h3><div class="category">SECURITY</div></div></div>
         <p class="description">Encryption keys, key policies and data protection concepts.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="kms">Learn concepts</button><a class="btn" href="/practice/kms">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/kms">Learn Deeply →</a><button class="btn secondary learn" data-lesson="kms">Learn concepts</button><a class="btn" href="/practice/kms">Open Lab</a></div>
         <div class="lesson" data-content="kms" hidden><strong>What is KMS?</strong><br>KMS helps manage cryptographic keys used by supported AWS services and applications to protect data.</div>
       </article>
 
       <article class="card" data-category="storage" data-search="efs elastic file system shared file storage linux">
         <div class="card-top"><div class="symbol">📁</div><div><h3>Amazon EFS</h3><div class="category">STORAGE</div></div></div>
         <p class="description">Managed shared file storage for supported compute workloads.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="efs">Learn concepts</button><a class="btn" href="/practice/efs">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/efs">Learn Deeply →</a><button class="btn secondary learn" data-lesson="efs">Learn concepts</button><a class="btn" href="/practice/efs">Open Lab</a></div>
         <div class="lesson" data-content="efs" hidden><strong>What is EFS?</strong><br>EFS provides elastic file storage that multiple supported Linux-based compute resources can access concurrently.</div>
       </article>
 
       <article class="card" data-category="devops" data-search="codepipeline cicd continuous integration deployment automation">
         <div class="card-top"><div class="symbol">🔄</div><div><h3>AWS CodePipeline</h3><div class="category">DEVOPS</div></div></div>
         <p class="description">Automated delivery stages for building, testing and deploying software.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="pipeline">Learn concepts</button><a class="btn" href="/practice/pipeline">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/pipeline">Learn Deeply →</a><button class="btn secondary learn" data-lesson="pipeline">Learn concepts</button><a class="btn" href="/practice/pipeline">Open Lab</a></div>
         <div class="lesson" data-content="pipeline" hidden><strong>What is CI/CD?</strong><br>A delivery pipeline automates steps such as source retrieval, testing, building and deployment. Every stage should report success or failure.</div>
       </article>
 
       <article class="card" data-category="monitor" data-search="aws budgets cost explorer billing pricing">
         <div class="card-top"><div class="symbol">💰</div><div><h3>AWS Budgets & Cost</h3><div class="category">COST MANAGEMENT</div></div></div>
         <p class="description">Understand usage costs, budget thresholds, alerts and cost estimation.</p>
-        <div class="card-actions"><button class="btn secondary learn" data-lesson="cost">Learn concepts</button><a class="btn" href="/practice/cost">Open Lab</a></div>
+        <div class="card-actions"><a class="btn secondary" href="/learning/service/cost">Learn Deeply →</a><button class="btn secondary learn" data-lesson="cost">Learn concepts</button><a class="btn" href="/practice/cost">Open Lab</a></div>
         <div class="lesson" data-content="cost" hidden><strong>What is cost management?</strong><br>Budgets and cost tools help track spending and alert you to thresholds. Simulated costs are educational estimates, not actual AWS billing data.</div>
       </article>
     </div>

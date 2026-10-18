@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+      width="900" height="500" viewBox="0 0 900 500" role="img">
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="8"
+          refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L6,3 z" fill="#60a5fa"/>
+        </marker>
+      </defs>
+      <rect width="900" height="500" rx="18" fill="#0b1220"/>
+      <text x="35" y="48" fill="#e5edf8" font-size="25"
+        font-weight="700">EC2 security layers</text>
+      <text x="35" y="76" fill="#9aacc5" font-size="14">Use multiple controls instead of relying on one setting.</text>
+
+    <rect x="40" y="145" width="180" height="95" rx="13"
+          fill="#111c2e" stroke="#c4b5fd" stroke-width="2"/>
+    <rect x="40" y="145" width="5" height="95" rx="2" fill="#c4b5fd"/>
+    <text x="58" y="176" fill="#e5edf8" font-size="17"
+          font-weight="700">IAM role</text>
+    <text x="58" y="202" fill="#9aacc5" font-size="13">AWS API permissions</text>
+
+    <rect x="260" y="145" width="180" height="95" rx="13"
+          fill="#111c2e" stroke="#fbbf24" stroke-width="2"/>
+    <rect x="260" y="145" width="5" height="95" rx="2" fill="#fbbf24"/>
+    <text x="278" y="176" fill="#e5edf8" font-size="17"
+          font-weight="700">Network rules</text>
+    <text x="278" y="202" fill="#9aacc5" font-size="13">Security Group</text>
+
+    <rect x="480" y="145" width="180" height="95" rx="13"
+          fill="#111c2e" stroke="#60a5fa" stroke-width="2"/>
+    <rect x="480" y="145" width="5" height="95" rx="2" fill="#60a5fa"/>
+    <text x="498" y="176" fill="#e5edf8" font-size="17"
+          font-weight="700">Access method</text>
+    <text x="498" y="202" fill="#9aacc5" font-size="13">SSM or SSH</text>
+
+    <rect x="700" y="145" width="160" height="95" rx="13"
+          fill="#111c2e" stroke="#fb923c" stroke-width="2"/>
+    <rect x="700" y="145" width="5" height="95" rx="2" fill="#fb923c"/>
+    <text x="718" y="176" fill="#e5edf8" font-size="17"
+          font-weight="700">EC2 host</text>
+    <text x="718" y="202" fill="#9aacc5" font-size="13">OS and app</text>
+
+    <line x1="220" y1="190" x2="260" y2="190"
+          stroke="#c4b5fd" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+
+    <line x1="440" y1="190" x2="480" y2="190"
+          stroke="#60a5fa" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+
+    <line x1="660" y1="190" x2="700" y2="190"
+          stroke="#fb923c" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+
+    <rect x="145" y="310" width="250" height="80" rx="13"
+          fill="#111c2e" stroke="#34d399" stroke-width="2"/>
+    <rect x="145" y="310" width="5" height="80" rx="2" fill="#34d399"/>
+    <text x="163" y="341" fill="#e5edf8" font-size="17"
+          font-weight="700">Least privilege</text>
+    <text x="163" y="367" fill="#9aacc5" font-size="13">Grant only needed actions</text>
+
+    <rect x="500" y="310" width="250" height="80" rx="13"
+          fill="#111c2e" stroke="#34d399" stroke-width="2"/>
+    <rect x="500" y="310" width="5" height="80" rx="2" fill="#34d399"/>
+    <text x="518" y="341" fill="#e5edf8" font-size="17"
+          font-weight="700">Host protection</text>
+    <text x="518" y="367" fill="#9aacc5" font-size="13">Patch, logs, safe secrets</text>
+
+    <line x1="350" y1="240" x2="270" y2="310"
+          stroke="#34d399" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+
+    <line x1="780" y1="240" x2="625" y2="310"
+          stroke="#34d399" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+    <text x="45" y="430" fill="#e5edf8" font-size="15">
+Security Groups filter network traffic; IAM roles authorize AWS API actions.
+Neither replaces operating-system security.
+</text>
+      <text x="35" y="472" fill="#9aacc5" font-size="12">
+        CLOUDSIM LEARN AND PRACTICE  |  CONCEPTUAL AWS DIAGRAM
+      </text>
+    </svg>

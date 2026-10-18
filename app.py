@@ -9,6 +9,7 @@ from security_group_lab import security_bp, init_security_group_db
 from route53_lab import route53_bp, init_route53_db
 from iam_lab import iam_bp, init_iam_db
 from extra_services_lab import extra_services_bp, init_extra_services_db
+from service_lessons import SERVICE_LESSONS
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("CLOUDSIM_SECRET_KEY") or secrets.token_hex(32)
@@ -101,6 +102,15 @@ def index():
 @app.route("/learning")
 def learning_center():
     return render_template("learning.html")
+
+
+@app.route("/learning/service/<slug>")
+def learning_service(slug):
+    lesson = SERVICE_LESSONS.get(slug)
+    if lesson is None:
+        from flask import abort
+        abort(404)
+    return render_template("service_learning.html", lesson=lesson)
 
 
 @app.route("/learning/ec2")

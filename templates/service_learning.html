@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloudSim | {{ lesson.name }} Deep Learning</title>
+<style>
+:root{color-scheme:dark;--bg:#09111f;--panel:#111c2e;--line:#293b53;--text:#edf4ff;--muted:#bdcce0;--blue:#60a5fa;--green:#86efac}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+a{color:#93c5fd;text-decoration:none}header{padding:18px 5%;border-bottom:1px solid var(--line);display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap}
+main{max-width:1150px;margin:auto;padding:25px 18px}.hero,.panel,.visual{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:17px}
+.eyebrow{color:#7dd3fc;font-size:12px;letter-spacing:1.5px}h1{font-size:clamp(28px,4vw,42px);margin:12px 0}h2{font-size:22px;margin-top:0}h3{font-size:17px;color:#93c5fd}
+p,li{font-size:14px;line-height:1.8;color:var(--muted)}.visuals{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.flow{display:flex;align-items:stretch;gap:7px;flex-wrap:wrap}.node{background:#0a1729;border:1px solid #38516e;border-radius:8px;padding:12px;flex:1 1 130px;text-align:center;font-size:13px;color:#dbeafe;display:flex;align-items:center;justify-content:center;min-height:65px}
+.arrow{align-self:center;color:var(--green);font-weight:bold}.tag{display:inline-block;background:#193353;color:#bfdbfe;padding:5px 9px;border-radius:20px;font-size:11px}
+button{background:#2563eb;color:white;border:0;padding:10px 14px;border-radius:7px;cursor:pointer}.answer{display:none;background:#0a1729;padding:12px;border-radius:8px;color:var(--green);line-height:1.8}
+footer{text-align:center;color:#8295ae;padding:25px;font-size:12px}@media(max-width:600px){main{padding:14px 10px}.hero,.panel,.visual{padding:15px}}
+
+
+.service-visual-gallery {
+  width: calc(100% + 120px);
+  margin: 30px 0 30px -60px;
+  padding: 30px;
+  background: linear-gradient(135deg, #111c2e, #0d1a2c);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.service-gallery-heading {
+  width: 100%;
+  margin: 0 0 24px;
+}
+.service-gallery-heading > span {
+  display: inline-block;
+  color: #7dd3fc;
+  font-size: 12px;
+  letter-spacing: 1.6px;
+  font-weight: 700;
+}
+.service-gallery-heading h2 {
+  font-size: clamp(25px, 3vw, 34px);
+  margin: 8px 0 10px;
+}
+.service-gallery-heading p { margin: 0; }
+.service-visual-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+}
+.service-visual-card {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #30445f;
+  border-radius: 14px;
+  background: #0b1626;
+  display: flex;
+  flex-direction: column;
+}
+.service-visual-card figcaption {
+  order: 0;
+  padding: 18px 22px 10px;
+}
+.service-visual-card h3 {
+  margin: 0 0 6px;
+  line-height: 1.4;
+  font-size: 21px;
+  overflow-wrap: anywhere;
+}
+.service-visual-card p {
+  margin: 0;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.service-visual-card img {
+  order: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+  background: #0b1626;
+  padding: 0;
+}
+@media (max-width: 700px) {
+  .service-visual-gallery {
+    width: 100%;
+    margin: 22px 0;
+    padding: 14px;
+  }
+  .service-visual-grid { grid-template-columns: minmax(0, 1fr); }
+  .service-visual-card figcaption { padding: 14px 14px 8px; }
+  .service-visual-card h3 { font-size: 18px; }
+}
+
+
+</style>
+</head>
+<body>
+<header><a href="/">☁ CloudSim Home</a><nav><a href="/learning">Learning Center</a> &nbsp; | &nbsp; {% if lesson.slug in ["ec2", "s3", "vpc"] %}
+<a href="{{ "/practice/vpc/" if lesson.slug == "vpc" else "/practice/" ~ lesson.slug }}">Open Practice Lab</a>
+{% else %}
+<a href="/learning">Explore Learning Center</a>
+{% endif %}</nav></header>
+<main>
+<section class="hero">
+<span class="eyebrow">CLOUD ENGINEER PATH · DEEP LEARNING</span>
+<h1>{{ lesson.name }}</h1>
+<p>{{ lesson.purpose }} This guide explains the service in simple English, from its main parts to common operational problems.</p>
+<p><span class="tag">Local learning guide</span> <span class="tag">Architecture diagrams</span> <span class="tag">Interview practice</span></p>
+</section>
+
+<section class="panel">
+<h2>1. What does this service do?</h2>
+<p>{{ lesson.purpose }} A cloud engineer selects the right configuration, grants only the permissions needed, checks connectivity, and monitors the service after deployment.</p>
+<h3>Real-world example</h3>
+<p>{{ lesson.example }} In a production system, the design must also account for availability, security, performance, backups where relevant, and cost.</p>
+<h3>Important components</h3>
+<ul>{% for part in lesson.components %}<li><b>{{ part }}:</b> Understand its purpose and how it affects configuration, access or operations.</li>{% endfor %}</ul>
+</section>
+
+
+
+<section class="panel">
+<h2>2. Typical workflow</h2>
+<ol>{% for step in lesson.workflow %}<li>{{ step }}.</li>{% endfor %}</ol>
+<p>Before applying changes in a real account, review access permissions, networking, monitoring, and possible charges. CloudSim's local practice environment does not create real AWS resources.</p>
+</section>
+
+<section class="panel">
+<h2>3. Security and reliability checklist</h2>
+<ul>
+<li>Apply least privilege: grant only the access required for the task.</li>
+<li>Protect credentials and never paste access keys into source code or public repositories.</li>
+<li>Check network access and resource policies rather than opening everything to the internet.</li>
+<li>Enable suitable logs, metrics, alerts and audit records.</li>
+<li>Plan for failures, backups or recovery where the service supports or requires them.</li>
+<li>Estimate costs and clean up real cloud resources when they are no longer needed.</li>
+</ul>
+</section>
+
+<section class="panel">
+<h2>4. Troubleshooting guide</h2>
+<p><b>Common starting point:</b> {{ lesson.issue }}</p>
+<ol>
+<li>Reproduce the issue and note the exact error and time.</li>
+<li>Check service status, configuration, identity permissions and network connectivity.</li>
+<li>Read the relevant logs or events and change one thing at a time.</li>
+<li>Repeat the test and document the cause and fix.</li>
+</ol>
+</section>
+
+
+<section id="service-visual-gallery" class="service-visual-gallery">
+  <div class="service-gallery-heading">
+    <span>VISUAL LEARNING</span>
+    <h2>5. {{ lesson.name }} — Diagram Gallery</h2>
+    <p>Study the architecture, components, workflow, troubleshooting
+       and real-world use case for this AWS service.</p>
+  </div>
+  <div class="service-visual-grid">
+    <figure class="service-visual-card">
+      <figcaption>
+        <h3>{{ lesson.name }} service icon</h3>
+        <p>Official AWS architecture icon for identifying this service.</p>
+      </figcaption>
+      <img
+        src="{{ url_for('static', filename='images/lessons/' ~ lesson.slug ~ '-aws-icon.svg') }}"
+        alt="{{ lesson.name }} official AWS service icon"
+        loading="eager">
+    </figure>
+    {% for kind, heading, caption in [
+      ("architecture", "Architecture and flow", "Follow how the service works."),
+      ("components", "Main components", "Understand the important building blocks."),
+      ("workflow", "Workflow", "Learn the operational sequence."),
+      ("troubleshooting", "Troubleshooting", "Follow a systematic debugging path."),
+      ("usecase", "Real-world use case", "Connect the concept to practical work.")
+    ] %}
+    <figure class="service-visual-card">
+      <figcaption><h3>{{ heading }}</h3><p>{{ caption }}</p></figcaption>
+      <img src="{{ url_for('static', filename='images/lessons/' ~ lesson.slug ~ '-' ~ kind ~ '.svg') }}"
+           alt="{{ lesson.name }}: {{ heading }}" loading="lazy">
+    </figure>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="panel">
+<h2>6. Interview questions</h2>
+<h3>Q1. What is {{ lesson.name }} used for?</h3>
+<button onclick="toggleAnswer('a1')">Reveal sample answer</button>
+<p class="answer" id="a1">{{ lesson.purpose }} A good answer should also explain one use case and one important security or operational consideration.</p>
+<h3>Q2. Explain its basic workflow.</h3>
+<button onclick="toggleAnswer('a2')">Reveal sample answer</button>
+<p class="answer" id="a2">{{ lesson.workflow | join(' → ') }}. The exact steps depend on the workload and configuration.</p>
+<h3>Q3. How would you troubleshoot a failure?</h3>
+<button onclick="toggleAnswer('a3')">Reveal sample answer</button>
+<p class="answer" id="a3">{{ lesson.issue }} I would confirm the symptoms, inspect logs and events, test the likely cause, and verify the fix.</p>
+<h3>Q4. How do you secure it?</h3>
+<button onclick="toggleAnswer('a4')">Reveal sample answer</button>
+<p class="answer" id="a4">Use least privilege, protect credentials, restrict network and resource access, enable relevant monitoring, and review the configuration regularly.</p>
+</section>
+
+<p><a href="/">← Back to all services</a></p>
+
+
+
+
+
+
+
+
+
+
+
+</main>
+<footer>CloudSim · Educational AWS service simulator · No real AWS resource is created by this lesson page.</footer>
+<script>
+function toggleAnswer(id){
+  const el=document.getElementById(id);
+  el.style.display=el.style.display==="block"?"none":"block";
+}
+</script>
+</body>
+</html>
