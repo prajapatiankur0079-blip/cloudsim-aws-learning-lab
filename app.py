@@ -103,6 +103,11 @@ def learning_center():
     return render_template("learning.html")
 
 
+@app.route("/learning/ec2")
+def learning_ec2():
+    return render_template("learning_ec2.html")
+
+
 # ---------------- EC2 DASHBOARD ----------------
 
 @app.route("/practice/ec2")

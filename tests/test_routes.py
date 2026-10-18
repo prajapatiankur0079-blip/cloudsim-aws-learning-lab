@@ -52,6 +52,7 @@ def client(tmp_path, monkeypatch):
     "/practice/s3",
     "/practice/vpc/",
     "/practice/security-groups/",
+    "/practice/iam/",
     "/practice/route53/",
     "/practice/route53/lookup",
 ])
@@ -984,3 +985,146 @@ def test_connectivity_rejects_invalid_destination_ip(client):
 
     assert response.status_code == 200
     assert b"SIMULATED PASS" not in response.data
+
+
+def _iam_create_user_for_test(client, name):
+    import iam_lab
+
+    client.post("/practice/iam/user/create", data={"name": name})
+    conn = iam_lab.db()
+    row = conn.execute(
+        "SELECT id FROM iam_users WHERE name = ?", (name,)
+    ).fetchone()
+    conn.close()
+    assert row is not None
+    return row["id"]
+
+
+def _iam_create_policy_for_test(client, name, effect, action, resource):
+    import iam_lab
+
+    client.post(
+        "/practice/iam/policy/create",
+        data={
+            "name": name,
+            "effect": effect,
+            "action": action,
+            "resource": resource,
+        },
+    )
+    conn = iam_lab.db()
+    row = conn.execute(
+        "SELECT id FROM iam_policies WHERE name = ?", (name,)
+    ).fetchone()
+    conn.close()
+    assert row is not None
+    return row["id"]
+
+
+def _iam_attach_policy_for_test(client, policy_id, principal_type, principal_id):
+    return client.post(
+        "/practice/iam/policy/attach",
+        data={
+            "policy_id": str(policy_id),
+            "principal_type": principal_type,
+            "principal_id": str(principal_id),
+        },
+        follow_redirects=True,
+    )
+
+
+def _iam_simulate_for_test(client, user_id, action="s3:GetObject",
+                           resource="reports/file.pdf"):
+    return client.post(
+        "/practice/iam/simulate",
+        data={
+            "principal_type": "user",
+            "principal_id": str(user_id),
+            "action": action,
+            "resource": resource,
+        },
+        follow_redirects=True,
+    )
+
+
+def test_iam_defaults_to_deny_without_matching_allow(client):
+    user_id = _iam_create_user_for_test(client, "default-deny-user")
+
+    response = _iam_simulate_for_test(client, user_id)
+
+    assert response.status_code == 200
+    assert b"Decision: DENY" in response.data
+    assert b"No matching Allow policy was found" in response.data
+
+
+def test_iam_matching_allow_policy_grants_access(client):
+    user_id = _iam_create_user_for_test(client, "allow-user")
+    policy_id = _iam_create_policy_for_test(
+        client, "allow-s3-read", "Allow", "s3:GetObject", "reports/*"
+    )
+    _iam_attach_policy_for_test(client, policy_id, "user", user_id)
+
+    response = _iam_simulate_for_test(client, user_id)
+
+    assert response.status_code == 200
+    assert b"Decision: ALLOW" in response.data
+    assert b"allow-s3-read" in response.data
+
+
+def test_iam_explicit_deny_overrides_allow(client):
+    user_id = _iam_create_user_for_test(client, "deny-overrides-user")
+
+    allow_id = _iam_create_policy_for_test(
+        client, "allow-reports", "Allow", "s3:GetObject", "reports/*"
+    )
+    deny_id = _iam_create_policy_for_test(
+        client, "deny-sensitive", "Deny", "s3:GetObject",
+        "reports/secret.pdf"
+    )
+    _iam_attach_policy_for_test(client, allow_id, "user", user_id)
+    _iam_attach_policy_for_test(client, deny_id, "user", user_id)
+
+    response = _iam_simulate_for_test(
+        client, user_id, resource="reports/secret.pdf"
+    )
+
+    assert response.status_code == 200
+    assert b"Decision: DENY" in response.data
+    assert b"explicit Deny policy takes precedence" in response.data
+
+
+def test_iam_user_inherits_attached_group_policy(client):
+    import iam_lab
+
+    user_id = _iam_create_user_for_test(client, "group-policy-user")
+    client.post(
+        "/practice/iam/group/create",
+        data={"name": "s3-readers"},
+        follow_redirects=True,
+    )
+
+    conn = iam_lab.db()
+    group = conn.execute(
+        "SELECT id FROM iam_groups WHERE name = ?", ("s3-readers",)
+    ).fetchone()
+    conn.close()
+    assert group is not None
+
+    client.post(
+        "/practice/iam/membership",
+        data={"user_id": str(user_id), "group_id": str(group["id"])},
+        follow_redirects=True,
+    )
+
+    policy_id = _iam_create_policy_for_test(
+        client, "group-s3-read", "Allow", "s3:GetObject", "reports/*"
+    )
+    _iam_attach_policy_for_test(
+        client, policy_id, "group", group["id"]
+    )
+
+    response = _iam_simulate_for_test(client, user_id)
+
+    assert response.status_code == 200
+    assert b"Decision: ALLOW" in response.data
+    assert b"group-s3-read" in response.data
