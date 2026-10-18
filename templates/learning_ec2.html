@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloudSim | EC2 Deep Learning</title>
+<style>
+:root{color-scheme:dark;--bg:#09111f;--panel:#111c2e;--border:#26364d;--muted:#9aabc2;--blue:#60a5fa;--text:#edf4ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+header{padding:18px 5%;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+a{color:#93c5fd;text-decoration:none}
+main{max-width:1100px;margin:auto;padding:25px 18px}
+section,.hero{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:18px}
+.hero{background:linear-gradient(130deg,#142c49,#101a2b)}
+h1{font-size:clamp(28px,4vw,42px)}
+h2{font-size:23px;color:#93c5fd}
+h3{font-size:17px}
+p,li{font-size:14px;line-height:1.85;color:#c5d2e4}
+.tag{color:#7dd3fc;font-size:11px;letter-spacing:1.5px;font-weight:bold}
+.note{padding:12px;background:#0b1525;border-left:3px solid #60a5fa;line-height:1.8}
+.diagram{width:100%;height:auto;display:block;background:#0b1525;border:1px solid #30435d;border-radius:10px}
+.diagram text{font-family:Arial,sans-serif;fill:#edf4ff;font-size:14px}
+.diagram .small{font-size:11px;fill:#c5d2e4}
+button{background:#2563eb;color:white;border:0;border-radius:7px;padding:10px 14px;cursor:pointer}
+.answer{display:none;color:#a7f3d0;line-height:1.8;padding:10px 0;font-size:14px}
+code{color:#86efac;background:#0b1525;padding:3px 5px;border-radius:4px}
+footer{text-align:center;color:#8799b2;font-size:12px;padding:20px}
+</style>
+</head>
+<body>
+<header>
+<strong><a href="/">☁ CloudSim</a> · EC2 Deep Learning</strong>
+<nav>
+<a href="/learning">All lessons</a> ·
+<a href="/practice/ec2">Open EC2 Practice Lab</a>
+</nav>
+</header>
+
+<main>
+<div class="hero">
+<div class="tag">COMPUTE · LESSON 01</div>
+<h1>Amazon EC2: Virtual Servers in the Cloud</h1>
+<p>Learn the architecture, components, instance lifecycle, networking, storage, security and troubleshooting of Amazon Elastic Compute Cloud (EC2).</p>
+<p>All practical actions in the linked CloudSim lab are local simulations. They do not create real AWS resources.</p>
+</div>
+
+<section>
+<h2>1. What is EC2?</h2>
+<p>Amazon Elastic Compute Cloud (EC2) is an AWS service that provides virtual servers called instances. An instance can run an operating system and applications such as websites, APIs, databases or background workers.</p>
+<ul>
+<li><b>Elastic:</b> you can change capacity as application needs change.</li>
+<li><b>Compute:</b> CPU and memory resources run your software.</li>
+<li><b>Cloud:</b> you provision and manage infrastructure through AWS interfaces and APIs.</li>
+</ul>
+<div class="note"><b>Example:</b> A company can run its web application on an EC2 instance instead of purchasing and maintaining a physical server.</div>
+</section>
+
+<section>
+<h2>2. EC2 architecture and structure</h2>
+<p>This simplified diagram shows how an internet request may reach an EC2-hosted application. Actual connectivity depends on routing, addressing and security configuration.</p>
+
+<svg class="diagram" viewBox="0 0 760 420" role="img" aria-label="EC2 architecture showing internet, internet gateway, VPC, public subnet, security group and EC2 instance">
+<defs>
+<marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#60a5fa"/></marker>
+</defs>
+<rect x="25" y="25" width="710" height="370" rx="14" fill="#101a2b" stroke="#64748b" stroke-width="1.5"/>
+<text x="45" y="52">AWS Region (conceptual view)</text>
+<rect x="55" y="78" width="145" height="62" rx="8" fill="#193353" stroke="#60a5fa"/>
+<text x="127" y="103" text-anchor="middle">Internet</text>
+<text x="127" y="122" text-anchor="middle" class="small">User / browser</text>
+<rect x="260" y="78" width="175" height="62" rx="8" fill="#193353" stroke="#60a5fa"/>
+<text x="347" y="103" text-anchor="middle">Internet Gateway</text>
+<text x="347" y="122" text-anchor="middle" class="small">VPC connection</text>
+<path d="M200 109 H255" stroke="#60a5fa" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="75" y="175" width="610" height="190" rx="12" fill="#102b29" stroke="#34d399" stroke-width="1.5"/>
+<text x="95" y="199">Virtual Private Cloud (VPC)</text>
+<rect x="110" y="220" width="540" height="120" rx="10" fill="#172b43" stroke="#93c5fd"/>
+<text x="130" y="243">Public subnet (example)</text>
+<rect x="145" y="260" width="210" height="58" rx="8" fill="#3a2b19" stroke="#fbbf24"/>
+<text x="250" y="283" text-anchor="middle">Security Group</text>
+<text x="250" y="301" text-anchor="middle" class="small">Allowed traffic rules</text>
+<rect x="405" y="260" width="210" height="58" rx="8" fill="#193353" stroke="#60a5fa"/>
+<text x="510" y="283" text-anchor="middle">EC2 Instance</text>
+<text x="510" y="301" text-anchor="middle" class="small">OS + application</text>
+<path d="M347 140 V160 H380 V190" fill="none" stroke="#60a5fa" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M355 289 H400" stroke="#60a5fa" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="380" y="383" text-anchor="middle" class="small">Illustrative architecture — not a live AWS topology</text>
+</svg>
+
+<h3>How a request reaches the application</h3>
+<ol>
+<li>A user requests the application's public endpoint.</li>
+<li>The Internet Gateway provides a path between the VPC and the internet when routing is configured.</li>
+<li>The subnet route table determines where traffic is directed.</li>
+<li>Security Groups allow or deny traffic according to their rules.</li>
+<li>The EC2 instance receives permitted traffic and the application responds.</li>
+</ol>
+<div class="note"><b>Important:</b> A public subnet alone does not make an instance reachable. Routes, public addressing, security rules, host firewall and a listening application may all matter.</div>
+</section>
+
+<section>
+<h2>EC2 Architecture Blueprint — Visual Reference</h2>
+<p>This expanded diagram connects the internet, VPC routing, public and private subnets, EC2, NAT Gateway and S3. It is a conceptual learning diagram, not a live AWS deployment.</p>
+<img
+  src="{{ url_for('static', filename='images/ec2-architecture.svg') }}"
+  alt="CloudSim EC2 architecture showing VPC networking, EC2 instances, gateways, and S3"
+  style="display:block;width:100%;height:auto;border:1px solid #30435d;border-radius:10px;background:#0b1525"
+  loading="lazy"
+>
+<div class="note"><b>Study tip:</b> Trace the public internet path through the Internet Gateway and route table. Private-subnet outbound internet access may use a NAT Gateway when configured. S3 access can use an appropriate endpoint or other supported network path.</div>
+</section>
+
+<section>
+<h2>3. Important EC2 components</h2>
+<h3>Amazon Machine Image (AMI)</h3>
+<p>An AMI is a template used to launch an instance. It specifies the operating system and may include preconfigured software and settings.</p>
+<h3>Instance type</h3>
+<p>The instance type determines available compute resources, including CPU, memory, networking and other capabilities. Choose a type based on workload requirements.</p>
+<h3>Key pair</h3>
+<p>A key pair can support secure login to instances. Keep private keys secret and use an appropriate access method for the operating system and configuration.</p>
+<h3>Security Group</h3>
+<p>A Security Group acts as a virtual firewall for supported resources. It is stateful and controls permitted inbound and outbound traffic.</p>
+<h3>Storage</h3>
+<p>EC2 can use EBS block volumes and instance store where supported. Separate object storage such as S3 is useful for files, backups and application assets.</p>
+</section>
+
+<section>
+<h2>4. Instance lifecycle</h2>
+<ol>
+<li><b>Launch:</b> create an instance from an image and selected configuration.</li>
+<li><b>Running:</b> the instance is operating; compute charges may apply in real AWS.</li>
+<li><b>Stop:</b> for supported EBS-backed instances, compute billing generally stops, but storage and other resources may still incur charges.</li>
+<li><b>Start:</b> restart a stopped instance; its public IPv4 address may change unless a persistent address is configured.</li>
+<li><b>Reboot:</b> restart the operating system without the same lifecycle effect as stop/start.</li>
+<li><b>Terminate:</b> permanently end the instance. Data on volumes may be affected depending on volume settings.</li>
+</ol>
+<div class="note"><b>Cost safety:</b> CloudSim simulates these actions locally. Before using real AWS, verify current pricing and inspect attached resources to avoid unexpected charges.</div>
+</section>
+
+<section>
+<h2>5. Networking and access</h2>
+<ul>
+<li>A VPC is a logically isolated network in AWS.</li>
+<li>A subnet places resources within a VPC address range and Availability Zone.</li>
+<li>Route tables determine the next hop for network traffic.</li>
+<li>An Internet Gateway supports internet connectivity for appropriately routed resources.</li>
+<li>Security Groups filter traffic at the resource level; network ACLs operate at the subnet level.</li>
+<li>SSH commonly uses TCP port 22 for Linux; RDP commonly uses TCP port 3389 for Windows. Do not expose administration ports broadly.</li>
+</ul>
+</section>
+
+<section>
+<h2>6. Troubleshooting an unreachable EC2 server</h2>
+<ol>
+<li>Confirm the instance state and correct IP address or DNS name.</li>
+<li>Check the route table, subnet and internet gateway path where relevant.</li>
+<li>Check Security Group inbound and outbound rules and network ACLs.</li>
+<li>Confirm the operating-system firewall permits the required traffic.</li>
+<li>Verify the application or SSH service is running and listening on the expected port.</li>
+<li>Review system and application logs; change one thing at a time and retest.</li>
+</ol>
+<p>Useful Linux commands when you have access to the server:</p>
+<ul>
+<li><code>ip route</code> — inspect the routing table.</li>
+<li><code>ss -tuln</code> — inspect listening TCP/UDP sockets.</li>
+<li><code>systemctl status ssh</code> — inspect SSH service status on systems using that service name.</li>
+<li><code>curl -I http://localhost:PORT</code> — test a local HTTP endpoint, replacing PORT with the actual port.</li>
+</ul>
+</section>
+
+<section>
+<h2>7. Interview practice</h2>
+<h3>Q1. What is an AMI?</h3>
+<button onclick="toggleAnswer('a1')">Reveal sample answer</button>
+<div class="answer" id="a1">An AMI is a template used to launch EC2 instances. It contains information needed to start an instance, including an operating-system image and, depending on the AMI, preconfigured software.</div>
+<h3>Q2. What is the difference between stopping and terminating an instance?</h3>
+<button onclick="toggleAnswer('a2')">Reveal sample answer</button>
+<div class="answer" id="a2">Stopping an instance pauses it so it can generally be started again. Terminating an instance permanently ends it. Storage retention depends on volume configuration and other resource settings.</div>
+<h3>Q3. Why might an EC2 instance be unreachable?</h3>
+<button onclick="toggleAnswer('a3')">Reveal sample answer</button>
+<div class="answer" id="a3">Possible causes include an incorrect address, missing route, incorrect Security Group or network ACL rules, host firewall settings, or a service that is not listening. I would check each layer systematically.</div>
+<h3>Q4. What is a Security Group?</h3>
+<button onclick="toggleAnswer('a4')">Reveal sample answer</button>
+<div class="answer" id="a4">A Security Group is a stateful virtual firewall associated with supported AWS resources. Its rules determine which inbound and outbound traffic is permitted.</div>
+</section>
+
+<section>
+<h2>8. Practical exercise in CloudSim</h2>
+<p>Open the local simulator and practise launching, stopping, starting and terminating a test instance. Observe the instance state and activity log after each action.</p>
+<p><a href="/practice/ec2">→ Open EC2 Practice Lab</a></p>
+<div class="note">This exercise uses CloudSim's local simulation. It does not create or manage a real AWS instance.</div>
+</section>
+</main>
+
+<footer>CloudSim Learning Center · EC2 lesson · Verify current AWS documentation before using real infrastructure.</footer>
+<script>
+function toggleAnswer(id){
+  const element = document.getElementById(id);
+  if(element){
+    element.style.display = element.style.display === "block" ? "none" : "block";
+  }
+}
+</script>
+</body>
+</html>

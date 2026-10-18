@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+<title id="title">Amazon EC2 cloud architecture</title>
+<desc id="desc">A conceptual AWS architecture with internet access, a VPC, public and private subnets, an internet gateway, NAT gateway, route tables, security groups, EC2, EBS and S3.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#071b35"/>
+    <stop offset="1" stop-color="#0b1023"/>
+  </linearGradient>
+  <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#ffbd66"/>
+    <stop offset="1" stop-color="#f58220"/>
+  </linearGradient>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+    <path d="M0,0 L0,6 L9,3 Z" fill="#53b7ff"/>
+  </marker>
+  <style>
+    text{font-family:Inter,Arial,sans-serif;fill:#edf5ff}
+    .muted{fill:#a9bfd9;font-size:15px}
+    .heading{font-size:20px;font-weight:700}
+    .label{font-size:16px;font-weight:600}
+    .small{font-size:13px;fill:#c2d5ed}
+    .edge{fill:none;stroke:#53b7ff;stroke-width:3;marker-end:url(#arrow)}
+    .card{fill:#102b4b;stroke:#3472a5;stroke-width:1.5}
+    .aws{fill:#16243b;stroke:#3c536f;stroke-width:1.5}
+  </style>
+</defs>
+
+<rect width="1200" height="760" rx="24" fill="url(#bg)"/>
+<text x="40" y="46" font-size="14" font-weight="700" fill="#53b7ff">CLOUDSIM  /  ARCHITECTURE BLUEPRINT</text>
+<text x="40" y="82" font-size="29" font-weight="700">Amazon EC2 — Network &amp; Storage</text>
+<text x="40" y="108" class="muted">Conceptual reference architecture • Not a live AWS topology</text>
+
+<!-- Internet -->
+<rect x="40" y="150" width="200" height="100" rx="14" class="card"/>
+<circle cx="78" cy="188" r="20" fill="#1b5d91"/>
+<path d="M59 188h38M78 168c-12 12-12 28 0 40M78 168c12 12 12 28 0 40M60 178h36M60 198h36" fill="none" stroke="#8bd5ff" stroke-width="2"/>
+<text x="110" y="184" class="heading">Internet</text>
+<text x="110" y="207" class="small">Users / clients</text>
+<text x="110" y="227" class="small">HTTPS requests</text>
+
+<!-- IGW -->
+<rect x="290" y="150" width="200" height="100" rx="14" class="card"/>
+<circle cx="326" cy="188" r="19" fill="#164e70" stroke="#53b7ff"/>
+<path d="M315 188h22m-8-8 8 8-8 8" fill="none" stroke="#fff" stroke-width="2"/>
+<text x="355" y="183" class="label">Internet Gateway</text>
+<text x="355" y="206" class="small">VPC internet path</text>
+<text x="355" y="226" class="small">Requires routing</text>
+<path d="M240 200H282" class="edge"/>
+
+<!-- VPC boundary -->
+<rect x="40" y="290" width="870" height="410" rx="20" fill="#0a282e" stroke="#20bba5" stroke-width="2.5" stroke-dasharray="9 5"/>
+<text x="65" y="325" font-size="22" font-weight="700" fill="#5ce1c5">Amazon VPC</text>
+<text x="65" y="348" class="muted">Isolated virtual network • Example CIDR: 10.0.0.0/16</text>
+<path d="M390 250V275H170V375" class="edge"/>
+
+<!-- Public subnet -->
+<rect x="65" y="375" width="395" height="285" rx="15" fill="#132a42" stroke="#53b7ff" stroke-width="2"/>
+<text x="85" y="407" class="heading">Public subnet</text>
+<text x="85" y="430" class="muted">10.0.1.0/24 • Example AZ</text>
+
+<rect x="85" y="450" width="155" height="78" rx="10" fill="#332a20" stroke="#f7b955" stroke-width="1.5"/>
+<text x="162" y="477" text-anchor="middle" class="label">Route table</text>
+<text x="162" y="499" text-anchor="middle" class="small">0.0.0.0/0 → IGW</text>
+
+<rect x="265" y="450" width="170" height="78" rx="10" fill="#173c3b" stroke="#42d6b0" stroke-width="1.5"/>
+<text x="350" y="477" text-anchor="middle" class="label">NAT Gateway</text>
+<text x="350" y="499" text-anchor="middle" class="small">Outbound path</text>
+<text x="350" y="516" text-anchor="middle" class="small">for private subnet</text>
+
+<path d="M490 200H520V357H435V442" class="edge"/>
+
+<!-- Private subnet -->
+<rect x="485" y="375" width="400" height="285" rx="15" fill="#182442" stroke="#9c8cff" stroke-width="2"/>
+<text x="505" y="407" class="heading">Private subnet</text>
+<text x="505" y="430" class="muted">10.0.2.0/24 • No direct public ingress</text>
+
+<rect x="505" y="450" width="155" height="65" rx="10" fill="#282443" stroke="#9c8cff"/>
+<text x="582" y="476" text-anchor="middle" class="label">Route table</text>
+<text x="582" y="498" text-anchor="middle" class="small">Default → NAT</text>
+
+<rect x="685" y="450" width="175" height="95" rx="10" fill="#37291f" stroke="#ff9d48" stroke-width="2"/>
+<rect x="700" y="463" width="30" height="30" rx="6" fill="url(#orange)"/>
+<text x="715" y="484" text-anchor="middle" font-size="17" font-weight="700" fill="#142033">E</text>
+<text x="739" y="480" class="label">EC2 instance</text>
+<text x="700" y="511" class="small">Application / API</text>
+<text x="700" y="530" class="small">Security Group attached</text>
+<path d="M660 482H677" class="edge"/>
+<path d="M350 536V570H582V522" fill="none" stroke="#53b7ff" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<text x="390" y="591" class="small">Private outbound traffic</text>
+
+<!-- Storage side cards -->
+<rect x="950" y="150" width="210" height="135" rx="15" class="aws"/>
+<circle cx="986" cy="188" r="19" fill="#49321a" stroke="#ffb14e"/>
+<path d="M977 178h18v20h-18zM980 183h12M980 188h12M980 193h8" stroke="#ffc46b" fill="none" stroke-width="2"/>
+<text x="1017" y="184" class="heading">Amazon EBS</text>
+<text x="970" y="228" class="small">Persistent block storage</text>
+<text x="970" y="249" class="small">OS disk / application data</text>
+<text x="970" y="270" class="small">Volume lifecycle matters</text>
+
+<rect x="950" y="315" width="210" height="135" rx="15" class="aws"/>
+<circle cx="986" cy="353" r="19" fill="#164737" stroke="#55dba4"/>
+<ellipse cx="986" cy="345" rx="10" ry="4" fill="none" stroke="#7af0ba" stroke-width="2"/>
+<path d="M976 345v15c0 6 20 6 20 0v-15M976 352c0 6 20 6 20 0" fill="none" stroke="#7af0ba" stroke-width="2"/>
+<text x="1017" y="349" class="heading">Amazon S3</text>
+<text x="970" y="393" class="small">Object storage</text>
+<text x="970" y="414" class="small">Files / backups / assets</text>
+<text x="970" y="435" class="small">Access controlled by policy</text>
+
+<rect x="950" y="480" width="210" height="155" rx="15" class="aws"/>
+<text x="970" y="513" class="heading">Security layers</text>
+<text x="970" y="542" class="small">01  Security Groups</text>
+<text x="970" y="565" class="small">02  Network ACLs</text>
+<text x="970" y="588" class="small">03  IAM permissions</text>
+<text x="970" y="611" class="small">04  OS firewall &amp; patches</text>
+
+<path d="M860 480H930V218H942" fill="none" stroke="#f7b955" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<path d="M860 510H930V383H942" fill="none" stroke="#55dba4" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+
+<text x="40" y="735" class="muted">Learning note: Public/private subnet behaviour depends on route tables, addressing, firewall rules and service configuration.</text>
+</svg>
