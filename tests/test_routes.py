@@ -1128,3 +1128,187 @@ def test_iam_user_inherits_attached_group_policy(client):
     assert response.status_code == 200
     assert b"Decision: ALLOW" in response.data
     assert b"group-s3-read" in response.data
+
+
+# Additional IAM validation and lifecycle tests.
+def test_iam_rejects_blank_user_name(client):
+    response = client.post(
+        "/practice/iam/user/create",
+        data={"name": "   "},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"User name is required." in response.data
+
+
+def test_iam_rejects_duplicate_user_name(client):
+    import iam_lab
+
+    _iam_create_user_for_test(client, "duplicate-user")
+    response = client.post(
+        "/practice/iam/user/create",
+        data={"name": "duplicate-user"},
+        follow_redirects=True,
+    )
+
+    assert b"That user name already exists." in response.data
+    conn = iam_lab.db()
+    count = conn.execute(
+        "SELECT COUNT(*) FROM iam_users WHERE name = ?",
+        ("duplicate-user",),
+    ).fetchone()[0]
+    conn.close()
+    assert count == 1
+
+
+@pytest.mark.parametrize(
+    "data",
+    [
+        {"name": "", "effect": "Allow", "action": "s3:GetObject",
+         "resource": "reports/*"},
+        {"name": "missing-action", "effect": "Allow",
+         "action": "", "resource": "reports/*"},
+        {"name": "missing-resource", "effect": "Allow",
+         "action": "s3:GetObject", "resource": ""},
+        {"name": "bad-effect", "effect": "Permit",
+         "action": "s3:GetObject", "resource": "reports/*"},
+    ],
+)
+def test_iam_rejects_invalid_policy_input(client, data):
+    response = client.post(
+        "/practice/iam/policy/create",
+        data=data,
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"Enter a policy name, valid effect, action and resource." in response.data
+
+
+def test_iam_rejects_invalid_policy_principal_type(client):
+    user_id = _iam_create_user_for_test(client, "invalid-principal-user")
+    policy_id = _iam_create_policy_for_test(
+        client, "invalid-principal-policy", "Allow",
+        "s3:GetObject", "reports/*",
+    )
+
+    response = client.post(
+        "/practice/iam/policy/attach",
+        data={
+            "policy_id": str(policy_id),
+            "principal_type": "service",
+            "principal_id": str(user_id),
+        },
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"Invalid identity type." in response.data
+
+
+def test_iam_rejects_attachment_to_missing_identity(client):
+    policy_id = _iam_create_policy_for_test(
+        client, "missing-identity-policy", "Allow",
+        "s3:GetObject", "reports/*",
+    )
+
+    response = client.post(
+        "/practice/iam/policy/attach",
+        data={
+            "policy_id": str(policy_id),
+            "principal_type": "user",
+            "principal_id": "999999",
+        },
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"Selected policy or identity does not exist." in response.data
+
+
+def test_iam_rejects_duplicate_policy_attachment(client):
+    import iam_lab
+
+    user_id = _iam_create_user_for_test(client, "duplicate-attachment-user")
+    policy_id = _iam_create_policy_for_test(
+        client, "duplicate-attachment-policy", "Allow",
+        "s3:GetObject", "reports/*",
+    )
+
+    _iam_attach_policy_for_test(client, policy_id, "user", user_id)
+    response = _iam_attach_policy_for_test(
+        client, policy_id, "user", user_id
+    )
+
+    assert b"That policy is already attached." in response.data
+    conn = iam_lab.db()
+    count = conn.execute(
+        """SELECT COUNT(*) FROM iam_policy_attachments
+           WHERE policy_id = ? AND principal_type = 'user'
+           AND principal_id = ?""",
+        (policy_id, user_id),
+    ).fetchone()[0]
+    conn.close()
+    assert count == 1
+
+
+def test_iam_deleting_policy_removes_its_attachments(client):
+    import iam_lab
+
+    user_id = _iam_create_user_for_test(client, "policy-delete-user")
+    policy_id = _iam_create_policy_for_test(
+        client, "policy-to-delete", "Allow",
+        "s3:GetObject", "reports/*",
+    )
+    _iam_attach_policy_for_test(client, policy_id, "user", user_id)
+
+    response = client.post(
+        f"/practice/iam/policy/{policy_id}/delete",
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"Policy and its attachments deleted." in response.data
+
+    conn = iam_lab.db()
+    policy_count = conn.execute(
+        "SELECT COUNT(*) FROM iam_policies WHERE id = ?",
+        (policy_id,),
+    ).fetchone()[0]
+    attachment_count = conn.execute(
+        "SELECT COUNT(*) FROM iam_policy_attachments WHERE policy_id = ?",
+        (policy_id,),
+    ).fetchone()[0]
+    conn.close()
+
+    assert policy_count == 0
+    assert attachment_count == 0
+
+
+def test_iam_deleting_user_removes_user_policy_attachments(client):
+    import iam_lab
+
+    user_id = _iam_create_user_for_test(client, "user-delete-test")
+    policy_id = _iam_create_policy_for_test(
+        client, "user-delete-policy", "Allow",
+        "s3:GetObject", "reports/*",
+    )
+    _iam_attach_policy_for_test(client, policy_id, "user", user_id)
+
+    response = client.post(
+        f"/practice/iam/user/{user_id}/delete",
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    conn = iam_lab.db()
+    user_count = conn.execute(
+        "SELECT COUNT(*) FROM iam_users WHERE id = ?", (user_id,)
+    ).fetchone()[0]
+    attachment_count = conn.execute(
+        """SELECT COUNT(*) FROM iam_policy_attachments
+           WHERE principal_type = 'user' AND principal_id = ?""",
+        (user_id,),
+    ).fetchone()[0]
+    conn.close()
+
+    assert user_count == 0
+    assert attachment_count == 0
