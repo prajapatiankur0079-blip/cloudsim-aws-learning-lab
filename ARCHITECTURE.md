@@ -10,6 +10,8 @@ practice selected operations without creating real AWS resources.
 - app.py: Main Flask application, home page, learning center, EC2 and S3.
 - vpc_lab.py: VPC, subnet, gateway, routing and connectivity simulations.
 - security_group_lab.py: Security Group rules and traffic simulation.
+- iam_lab.py: IAM users, groups, roles, policies and simulated access decisions.
+- extra_services_lab.py: Additional AWS-inspired service simulations.
 - route53_lab.py: Hosted zones, DNS records and simulated lookups.
 - templates/: HTML pages for the web interface.
 - static/style.css: Web interface styling.
@@ -33,9 +35,9 @@ and the VPC, NAT Gateway, Security Group, and Route 53 lab databases.
 
 Run the test suite from the project directory with the virtual environment active:
 
-    python -m pytest -v tests/test_routes.py
+    python -m pytest -q
 
-The verified test suite currently contains 25 collected tests.
+The latest full local test run passed 173 tests; the count may change as tests are added.
 
 ## Limitations
 

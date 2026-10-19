@@ -401,9 +401,10 @@ def simulate():
 
     matching = []
     for policy in policies:
-        action_match = (
-            fnmatch.fnmatchcase(action.lower(), policy["action"].lower())
-            or fnmatch.fnmatchcase(policy["action"].lower(), action.lower())
+        # The policy action is the pattern; the requested action
+        # must match that pattern, not the other way around.
+        action_match = fnmatch.fnmatchcase(
+            action.lower(), policy["action"].lower()
         )
         resource_match = fnmatch.fnmatchcase(resource, policy["resource"])
         if action_match and resource_match:

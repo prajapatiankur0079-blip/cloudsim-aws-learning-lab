@@ -67,7 +67,7 @@ From the project directory, with the virtual environment activated:
 python -m pytest -v tests/test_routes.py
 ```
 
-The current test suite contains **25 tests**. It covers:
+The latest full local test run passed **173 tests**. The count may change as tests are added. It covers:
 
 - Main learning and service page responses.
 - EC2 instance lifecycle operations.
@@ -102,7 +102,7 @@ Tests use an isolated temporary SQLite database so test operations do not modify
 
 - Add application screenshots and a demo.
 - Document the application architecture.
-- Expand automated tests and input validation.
+- Continue expanding automated tests and input validation.
 - Improve setup documentation and dependency management.
 - Explore safe deployment options.
 

@@ -1312,3 +1312,49 @@ def test_iam_deleting_user_removes_user_policy_attachments(client):
 
     assert user_count == 0
     assert attachment_count == 0
+
+
+def test_iam_action_wildcard_allows_matching_action(client):
+    user_id = _iam_create_user_for_test(client, "wildcard-action-user")
+    policy_id = _iam_create_policy_for_test(
+        client, "wildcard-read-policy", "Allow", "s3:Get*", "reports/*"
+    )
+    _iam_attach_policy_for_test(client, policy_id, "user", user_id)
+
+    response = _iam_simulate_for_test(
+        client, user_id, action="s3:GetObject"
+    )
+
+    assert response.status_code == 200
+    assert b"Decision: ALLOW" in response.data
+
+
+def test_iam_action_wildcard_does_not_allow_unmatched_action(client):
+    user_id = _iam_create_user_for_test(client, "wildcard-put-user")
+    policy_id = _iam_create_policy_for_test(
+        client, "wildcard-read-only", "Allow", "s3:Get*", "reports/*"
+    )
+    _iam_attach_policy_for_test(client, policy_id, "user", user_id)
+
+    response = _iam_simulate_for_test(
+        client, user_id, action="s3:PutObject"
+    )
+
+    assert response.status_code == 200
+    assert b"Decision: DENY" in response.data
+
+
+def test_iam_narrow_action_policy_does_not_match_broad_request(client):
+    user_id = _iam_create_user_for_test(client, "broad-action-user")
+    policy_id = _iam_create_policy_for_test(
+        client, "narrow-read-policy", "Allow",
+        "s3:GetObject", "reports/*"
+    )
+    _iam_attach_policy_for_test(client, policy_id, "user", user_id)
+
+    response = _iam_simulate_for_test(
+        client, user_id, action="s3:*"
+    )
+
+    assert response.status_code == 200
+    assert b"Decision: DENY" in response.data
