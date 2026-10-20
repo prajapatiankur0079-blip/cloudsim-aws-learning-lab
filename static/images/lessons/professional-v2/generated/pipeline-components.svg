@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#65768b"/></marker></defs>
+<rect width="1440" height="900" fill="#f5f8fc"/>
+<rect x="28" y="25" width="1384" height="850" rx="22" fill="#ffffff" stroke="#d7e1ed" stroke-width="2"/>
+<text x="65" y="76" text-anchor="start" font-family="Inter,Arial,sans-serif" font-size="28" font-weight="750" fill="#152b49">AWS CodePipeline — Core Components</text>
+<text x="65" y="110" text-anchor="start" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="400" fill="#60748b">Key building blocks and their responsibilities</text>
+<rect x="65" y="132" width="1310" height="2" fill="#e6edf5"/>
+<image href="../../../aws-official/AWSCodePipeline.svg" x="1280" y="48" width="64" height="64" preserveAspectRatio="xMidYMid meet"/>
+<rect x="65" y="175" width="390" height="155" rx="13" fill="#f8fbff" stroke="#b8c9dc" stroke-width="1.5"/>
+<circle cx="92" cy="204" r="13" fill="#2463a6"/>
+<text x="92" y="209" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="700" fill="#ffffff">1</text>
+<text x="260.0" y="244" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="650" fill="#1c2d45">Pipeline</text>
+<rect x="483" y="175" width="390" height="155" rx="13" fill="#f8fbff" stroke="#b8c9dc" stroke-width="1.5"/>
+<circle cx="510" cy="204" r="13" fill="#2463a6"/>
+<text x="510" y="209" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="700" fill="#ffffff">2</text>
+<text x="678.0" y="244" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="650" fill="#1c2d45">source provider</text>
+<rect x="901" y="175" width="390" height="155" rx="13" fill="#f8fbff" stroke="#b8c9dc" stroke-width="1.5"/>
+<circle cx="928" cy="204" r="13" fill="#2463a6"/>
+<text x="928" y="209" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="700" fill="#ffffff">3</text>
+<text x="1096.0" y="244" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="650" fill="#1c2d45">stage</text>
+<rect x="65" y="355" width="390" height="155" rx="13" fill="#f8fbff" stroke="#b8c9dc" stroke-width="1.5"/>
+<circle cx="92" cy="384" r="13" fill="#2463a6"/>
+<text x="92" y="389" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="700" fill="#ffffff">4</text>
+<text x="260.0" y="424" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="650" fill="#1c2d45">action</text>
+<rect x="483" y="355" width="390" height="155" rx="13" fill="#f8fbff" stroke="#b8c9dc" stroke-width="1.5"/>
+<circle cx="510" cy="384" r="13" fill="#2463a6"/>
+<text x="510" y="389" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="13" font-weight="700" fill="#ffffff">5</text>
+<text x="678.0" y="424" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="650" fill="#1c2d45">artifact and service role</text>
+<text x="720" y="820" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="500" fill="#60748b">5 components · Based on the CloudSim lesson definition</text>
+<rect x="65" y="770" width="1310" height="1.5" fill="#e6edf5"/>
+<text x="65" y="810" text-anchor="start" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="650" fill="#60748b">CLOUDSIM LEARN &amp; PRACTICE  /  PIPELINE  /  COMPONENTS</text>
+<text x="1375" y="810" text-anchor="end" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="500" fill="#60748b">Educational reference</text>
+</svg>

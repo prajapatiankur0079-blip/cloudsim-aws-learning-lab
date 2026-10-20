@@ -93,6 +93,110 @@ footer{text-align:center;color:#8295ae;padding:25px;font-size:12px}@media(max-wi
 }
 
 
+
+/* CLOUDSIM_PRO_UI_POLISH_V1 */
+.service-visual-gallery {
+  width: 100% !important;
+  max-width: 1440px;
+  margin: 28px auto !important;
+  padding: clamp(12px, 2.2vw, 28px) !important;
+  box-sizing: border-box;
+  border: 1px solid rgba(148, 163, 184, .22);
+  border-radius: 22px;
+  background: linear-gradient(145deg, rgba(15, 23, 42, .96), rgba(17, 30, 49, .92));
+  box-shadow: 0 18px 55px rgba(0, 0, 0, .20);
+}
+.service-visual-gallery img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.service-visual-gallery figure,
+.service-visual-gallery .visual-card,
+.service-visual-gallery .diagram-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, .22);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, .72);
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.service-visual-gallery figure:hover,
+.service-visual-gallery .visual-card:hover,
+.service-visual-gallery .diagram-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(96, 165, 250, .65);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .22);
+}
+.service-visual-gallery figure img,
+.service-visual-gallery .visual-card img,
+.service-visual-gallery .diagram-card img {
+  width: 100%;
+  cursor: zoom-in;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+.service-visual-gallery img:focus-visible {
+  outline: 3px solid #60a5fa;
+  outline-offset: 3px;
+}
+.cloudsim-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  background: rgba(2, 6, 23, .92);
+  backdrop-filter: blur(8px);
+}
+.cloudsim-lightbox.is-open { display: flex; }
+.cloudsim-lightbox img {
+  max-width: min(1500px, 94vw);
+  max-height: 84vh;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, .45);
+}
+.cloudsim-lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 50%;
+  color: #fff;
+  background: #1e293b;
+  font-size: 28px;
+  cursor: pointer;
+}
+.cloudsim-lightbox-caption {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  right: 16px;
+  color: #e2e8f0;
+  text-align: center;
+  font-size: 14px;
+}
+@media (max-width: 700px) {
+  .service-visual-gallery { padding: 12px !important; border-radius: 14px; }
+  .service-visual-gallery figure,
+  .service-visual-gallery .visual-card,
+  .service-visual-gallery .diagram-card { border-radius: 12px; }
+  .cloudsim-lightbox { padding: 10px; }
+  .cloudsim-lightbox img { max-width: 96vw; max-height: 78vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .service-visual-gallery figure,
+  .service-visual-gallery .visual-card,
+  .service-visual-gallery .diagram-card { transition: none; }
+}
+
 </style>
 </head>
 <body>
@@ -177,7 +281,7 @@ footer{text-align:center;color:#8295ae;padding:25px;font-size:12px}@media(max-wi
     ] %}
     <figure class="service-visual-card">
       <figcaption><h3>{{ heading }}</h3><p>{{ caption }}</p></figcaption>
-      <img src="{{ url_for('static', filename='images/lessons/' ~ lesson.slug ~ '-' ~ kind ~ '.svg') }}"
+      <img src="{{ url_for('static', filename='images/lessons/professional-v2/generated/' ~ lesson.slug ~ '-' ~ ('use-case' if kind == 'usecase' else kind) ~ '.svg') }}"
            alt="{{ lesson.name }}: {{ heading }}" loading="lazy">
     </figure>
     {% endfor %}
@@ -220,5 +324,56 @@ function toggleAnswer(id){
   el.style.display=el.style.display==="block"?"none":"block";
 }
 </script>
+
+<!-- CLOUDSIM_PRO_LIGHTBOX_V1 -->
+<div class="cloudsim-lightbox" id="cloudsim-lightbox"
+     role="dialog" aria-modal="true" aria-label="Architecture diagram preview">
+  <button class="cloudsim-lightbox-close" type="button"
+          id="cloudsim-lightbox-close" aria-label="Close preview">×</button>
+  <img id="cloudsim-lightbox-image" alt="Expanded diagram preview">
+  <div class="cloudsim-lightbox-caption" id="cloudsim-lightbox-caption"></div>
+</div>
+
+
+<script>
+/* CLOUDSIM_PRO_LIGHTBOX_V1 */
+(() => {
+  const overlay = document.getElementById('cloudsim-lightbox');
+  const preview = document.getElementById('cloudsim-lightbox-image');
+  const caption = document.getElementById('cloudsim-lightbox-caption');
+  const closeButton = document.getElementById('cloudsim-lightbox-close');
+  if (!overlay || !preview || !closeButton) return;
+
+  let previousFocus = null;
+  const close = () => {
+    overlay.classList.remove('is-open');
+    preview.removeAttribute('src');
+    if (previousFocus) previousFocus.focus();
+  };
+
+  document.addEventListener('click', event => {
+    const img = event.target.closest(
+      '.service-visual-gallery img, img[src*="/images/lessons/"]'
+    );
+    if (img && !overlay.contains(img)) {
+      previousFocus = img;
+      preview.src = img.currentSrc || img.src;
+      preview.alt = img.alt || 'Expanded architecture diagram';
+      caption.textContent = img.alt || img.getAttribute('title') || 'Diagram preview';
+      overlay.classList.add('is-open');
+      closeButton.focus();
+    }
+  });
+
+  closeButton.addEventListener('click', close);
+  overlay.addEventListener('click', event => {
+    if (event.target === overlay) close();
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && overlay.classList.contains('is-open')) close();
+  });
+})();
+</script>
+
 </body>
 </html>
